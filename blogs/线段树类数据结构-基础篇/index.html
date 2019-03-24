@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/o_id.jpg?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/o_id.jpg?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/o_id.jpg?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/o_id.jpg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="引言线段树？顾名思义，就是一个节点维护某个区间的信息的数据结构 线段树有许多迷人的性质，我认为它是最美妙的数据结构了 它可以有很多的扩展变形：动态开点，可持久化线段树，树套树，线段树分治等… 实现方式的不一样也会带来不一样的效果 黑科技技巧更是有很多呢 那就来研究一下吧qwq  前置技能：静态线段树维护静态线段树维护是一切线段树的基础了 首先，线段树肯定是需要维护区间信息的 最核心的思想就是由小区">
+<meta name="keywords" content="数据结构-线段树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线段树类·数据结构的简单运用--基础篇">
+<meta property="og:url" content="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/线段树类数据结构-基础篇/index.html">
+<meta property="og:site_name" content="Dream_maker&#39;s blog">
+<meta property="og:description" content="引言线段树？顾名思义，就是一个节点维护某个区间的信息的数据结构 线段树有许多迷人的性质，我认为它是最美妙的数据结构了 它可以有很多的扩展变形：动态开点，可持久化线段树，树套树，线段树分治等… 实现方式的不一样也会带来不一样的效果 黑科技技巧更是有很多呢 那就来研究一下吧qwq  前置技能：静态线段树维护静态线段树维护是一切线段树的基础了 首先，线段树肯定是需要维护区间信息的 最核心的思想就是由小区">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-12-09T08:25:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="线段树类·数据结构的简单运用--基础篇">
+<meta name="twitter:description" content="引言线段树？顾名思义，就是一个节点维护某个区间的信息的数据结构 线段树有许多迷人的性质，我认为它是最美妙的数据结构了 它可以有很多的扩展变形：动态开点，可持久化线段树，树套树，线段树分治等… 实现方式的不一样也会带来不一样的效果 黑科技技巧更是有很多呢 那就来研究一下吧qwq  前置技能：静态线段树维护静态线段树维护是一切线段树的基础了 首先，线段树肯定是需要维护区间信息的 最核心的思想就是由小区">
+
+
+
+
+
+
+  <link rel="canonical" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/线段树类数据结构-基础篇/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>线段树类·数据结构的简单运用--基础篇 | Dream_maker's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/dream-maker-yk"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dream_maker's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/线段树类数据结构-基础篇/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dream_maker">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/o_id.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dream_maker's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">线段树类·数据结构的简单运用--基础篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-05 23:00:31" itemprop="dateCreated datePublished" datetime="2018-12-05T23:00:31+08:00">2018-12-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-12-09 16:25:46" itemprop="dateModified" datetime="2018-12-09T16:25:46+08:00">2018-12-09</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/知识点整理/" itemprop="url" rel="index"><span itemprop="name">知识点整理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h4><p>线段树？顾名思义，就是一个节点维护某个区间的信息的数据结构</p>
+<p>线段树有许多迷人的性质，我认为它是最美妙的数据结构了</p>
+<p>它可以有很多的扩展变形：动态开点，可持久化线段树，树套树，线段树分治等…</p>
+<p>实现方式的不一样也会带来不一样的效果</p>
+<p>黑科技技巧更是有很多呢</p>
+<p>那就来研究一下吧qwq</p>
+<hr>
+<h3 id="前置技能：静态线段树维护"><a href="#前置技能：静态线段树维护" class="headerlink" title="前置技能：静态线段树维护"></a>前置技能：静态线段树维护</h3><p>静态线段树维护是一切线段树的基础了</p>
+<p>首先，线段树肯定是需要维护区间信息的</p>
+<p>最核心的思想就是<strong>由小区间信息合并成大区间信息</strong></p>
+<p>而通常表示至少长度为2的区间的节点一般有两个子区间，并且长度均匀分配</p>
+<h4 id="前置技能0：数据表示方法"><a href="#前置技能0：数据表示方法" class="headerlink" title="前置技能0：数据表示方法"></a>前置技能0：数据表示方法</h4><p>在静态线段树中，数据需要怎么储存呢？</p>
+<p>首先我们需要一些静态的空间</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> val[N &lt;&lt; <span class="number">2</span>]；</span><br></pre></td></tr></table></figure>
+<p>这里的$N &lt;&lt;2$是因为实际线段树节点是$2*N-1$个的，为了防止叶子节点爆炸，还需要再多一倍</p>
+<p>那么接下来，看看节点的表示方法</p>
+<p>首先假设线段树的范围是$[1,n]$，我们默认1号节点维护了$[1,n]$区间信息</p>
+<p>剩下对于每个节点t（包含1）</p>
+<p>都可以构造一种表示方法使得空间被完美利用</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LD (t &lt;&lt; 1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RD (t &lt;&lt; 1 | 1)</span></span><br></pre></td></tr></table></figure>
+<p>枚举一下情境就会发现这样表示是一定可以把空间利用完全的</p>
+<h4 id="前置技能1：维护信息"><a href="#前置技能1：维护信息" class="headerlink" title="前置技能1：维护信息"></a>前置技能1：维护信息</h4><h5 id="前置技能1-1：向上维护标记"><a href="#前置技能1-1：向上维护标记" class="headerlink" title="前置技能1-1：向上维护标记"></a>前置技能1-1：向上维护标记</h5><p>怎么从左右儿子获得当前区间的全部信息呢？</p>
+<p>用一个函数来实现</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushup</span><span class="params">(<span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//do something</span></span><br><span class="line">  <span class="comment">//example : maxv[t] = max(maxv[LD], maxv[RD]);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只需要找到对应的信息合并方式就可以了</p>
+<p>如果需要维护的信息比较复杂，有一个办法：<strong>分解成很多个可以维护简单信息</strong></p>
+<h5 id="前置技能1-2：向下传递标记"><a href="#前置技能1-2：向下传递标记" class="headerlink" title="前置技能1-2：向下传递标记"></a>前置技能1-2：向下传递标记</h5><p>这个思想是因为每次我们不能把左右标记传到叶子节点</p>
+<p>因为这样的话复杂度就炸裂了</p>
+<p>所以考虑怎么优化？</p>
+<p>我们需要用到一个叫做<code>lazy标记</code>的东西</p>
+<p>这个东西可以储存我们还没有下放的标记</p>
+<p>可以让我们在用到这个区间信息的时候再来慢慢下传</p>
+<p>有一个结论，<strong>任意一个区间在线段树上最多被分成log个区间</strong></p>
+<p>所以复杂度就有保证了</p>
+<p>本人习惯实现两个函数分别表示维护当前层的更新信息和将标记下传到子节点</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> lazy[N &lt;&lt; <span class="number">2</span>];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushnow</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> tag)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//用 tag 更新 t 的信息</span></span><br><span class="line">  <span class="comment">//维护 tag 和 lazy[t] </span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushdown</span><span class="params">(<span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (lazy[t]) &#123;</span><br><span class="line">    pushnow(LD, lazy[t]);</span><br><span class="line">    pushnow(RD, lazy[t]);</span><br><span class="line">    lazy[t] = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="前置技能2：建树"><a href="#前置技能2：建树" class="headerlink" title="前置技能2：建树"></a>前置技能2：建树</h4><p>建树，顾名思义，就是把这个线段树给建出来</p>
+<p>具体实现方法是递归建树，因为线段树的左右儿子节点维护的区间的并就是当前节点维护的区间</p>
+<p>那么我们就可以递归分配左右儿子区间了</p>
+<p>因为要保证树高，所以每次分配的时候以当前区间$[l,r]$的中间节点$mid = (l + r) &gt;&gt; 1$作为分界线</p>
+<p>如果建树的时候需要初始化一些信息就随机应变咯</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  build(LD, l, mid);</span><br><span class="line">  build(RD, mid + <span class="number">1</span>, r);</span><br><span class="line">  pushup(t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="前置技能3：单点修改"><a href="#前置技能3：单点修改" class="headerlink" title="前置技能3：单点修改"></a>前置技能3：单点修改</h4><p>唔，现在需要改一个点的信息？怎么办？</p>
+<p>可以直接按照区间的范围递归找到那个你需要找的点，因为<strong>线段树最多只有log层</strong>，所以复杂度是有保证的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">modify_point</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> pos, <span class="keyword">int</span> tag)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">    pushnow(t, tag);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (pos &lt;= mid) modify_point(LD, l, mid, pos, tag);</span><br><span class="line">  <span class="keyword">else</span> modify_point(RD, mid + <span class="number">1</span>, r, pos, tag);</span><br><span class="line">  pushup(t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="前置技能4：单点查询"><a href="#前置技能4：单点查询" class="headerlink" title="前置技能4：单点查询"></a>前置技能4：单点查询</h4><p>现在要查询一个点的信息？</p>
+<p>有些毒瘤手段先不说……</p>
+<p>就暴力递归就可以了，和单点查询一样的思路</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">query_point</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> pos)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) <span class="keyword">return</span> something_you_need;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (pos &lt;= mid) <span class="keyword">return</span> query_point(LD, l, mid, pos);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> query_point(RD, mid + <span class="number">1</span>, r, pos);</span><br><span class="line">  <span class="comment">//询问的时候不需要更新当前的信息，因为没有改变qwq</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="前置技能5：区间修改"><a href="#前置技能5：区间修改" class="headerlink" title="前置技能5：区间修改"></a>前置技能5：区间修改</h4><p>比单点修改稍微复杂一点，现在我们需要修改一整个区间的信息？怎么办？</p>
+<p>假设我们在考虑一个节点t，并且需要修改的区间$[ql,qr]$并没有包含t的区间$[l,r]$怎么办？</p>
+<p>如果$qr\le mid$，则这个修改只对t的左边儿子区间有影响，向左递归问题</p>
+<p>如果$mid&lt;ql$，则这个修改只对t的右边儿子区间有影响，向右递归问题</p>
+<p>还剩一种情况，就是t的左右区间各包含了一部分的$[ql,qr]$怎么办？，那么就同时暴力递归到左右两个子区间就可以了，因为有一个刚才提到的结论：<strong>任意一个区间在线段树上最多被分成log个区间</strong></p>
+<p>所以复杂度还是有保证的</p>
+<p><strong>注意一定要在递归成子区间之前下传标记并更新子区间信息哦！！</strong>，不然的话可能会出现神奇的错误（比如说当下传的时候有一些特殊的限制…..过会再讲）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">modify_segment</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> ql, <span class="keyword">int</span> qr, <span class="keyword">int</span> tag)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (ql &lt;= l &amp;&amp; r &lt;= qr) &#123;</span><br><span class="line">    pushnow(t, tag);<span class="comment">//初学者可以仔细理解一下这个pushnow的作用,dalao跳过</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  pushdown(t);<span class="comment">//向下传递一波标记</span></span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (qr &lt;= mid) modify_segment(LD, l, mid, ql, qr, tag);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (ql &gt; mod) modify_segment(RD, mid + <span class="number">1</span>, r, ql, qr, tag);</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    modify_segment(LD, l, mid, ql, mid, tag);</span><br><span class="line">    modify_segment(RD, mid + <span class="number">1</span>, r, mid + <span class="number">1</span>, qr, tag);</span><br><span class="line">  &#125;</span><br><span class="line">  pushup(t);<span class="comment">//向上更新一波信息</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="前置技能6：区间查询"><a href="#前置技能6：区间查询" class="headerlink" title="前置技能6：区间查询"></a>前置技能6：区间查询</h4><p>只要理解了区间修改查询就不是问题啦</p>
+<p>还需要注意一下，因为区间查询的时候下传的标记都是完整的（覆盖了整个区间），所以区间信息不需要重新向上维护，因为$pushnow$函数已经把这个区间的信息维护了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query_segment</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> ql, <span class="keyword">int</span> qr)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (ql &lt;= l &amp;&amp; r &lt;= qr) <span class="keyword">return</span> something_you_need;</span><br><span class="line">  pushdown(t);</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (qr &lt;= mid) <span class="keyword">return</span> query_segment(LD, l, mid, ql, qr);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (ql &gt; mid) <span class="keyword">return</span> query_segment(RD, mid + <span class="number">1</span>, r, ql, qr);</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">int</span> res;</span><br><span class="line">    <span class="comment">//合并res和query_segment(LD, l, mid, ql, mid)的信息</span></span><br><span class="line">    <span class="comment">//合并res和query_segment(RD, mid + 1, r, mid + 1, qr)的信息</span></span><br><span class="line">  	<span class="keyword">return</span> res;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="前置技能拓展：动态开点线段树"><a href="#前置技能拓展：动态开点线段树" class="headerlink" title="前置技能拓展：动态开点线段树"></a>前置技能拓展：动态开点线段树</h3><p>动态开点是什么？就是不给每个节点分配固定的内存</p>
+<p>因为如果分配内存可能会对内存空间造成极大的浪费</p>
+<p>所以我们每次只给需要用到的区间分配内存并建立节点</p>
+<p>应用于线段树合并和主席树和一些神奇的东西</p>
+<p>因为<strong>主席树和一般的动态开点线段树有不小的区别，所以在这里不包含主席树的维护方式，后面单独讲解</strong></p>
+<h4 id="前置技能拓展0：数据表示方法"><a href="#前置技能拓展0：数据表示方法" class="headerlink" title="前置技能拓展0：数据表示方法"></a>前置技能拓展0：数据表示方法</h4><p>因为线段树不再是静态的了，显然是不能给每个节点分配静态的儿子</p>
+<p>所以考虑用数组记录下来</p>
+<p>因为需要动态分配内存，所以我们还需要一个指针记录分配到哪里了，并且需要一个指针记录根节点是什么</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> rt, tot = <span class="number">0</span>;<span class="comment">//rt 根节点 tot 当前指针</span></span><br><span class="line"><span class="keyword">int</span> ls[N], rs[N]，;<span class="comment">//一个节点的左右儿子</span></span><br></pre></td></tr></table></figure>
+<h4 id="前置技能拓展1：插入节点信息"><a href="#前置技能拓展1：插入节点信息" class="headerlink" title="前置技能拓展1：插入节点信息"></a>前置技能拓展1：插入节点信息</h4><p>和静态线段树略有不同的是</p>
+<p>动态开点线段树需要判断当前节点存不存在并分配内存</p>
+<p>而且单次只会插入一个位置的信息</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> &amp;t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> pos)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!t) t = ++tot;</span><br><span class="line">  <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (pos &lt;= mid) insert(ls[t], l, mid, pos);</span><br><span class="line">  <span class="keyword">else</span> insert(rs[t], mid + <span class="number">1</span>, r, pos);</span><br><span class="line">  pushup(t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="前置技能拓展2：动态开点线段树的合并"><a href="#前置技能拓展2：动态开点线段树的合并" class="headerlink" title="前置技能拓展2：动态开点线段树的合并"></a>前置技能拓展2：动态开点线段树的合并</h4><p>有的时候我们在维护一些联通块的信息的时候需要用到动态开点线段树的合并</p>
+<p>这样就可以快速合并两个联通块的信息了</p>
+<p>这个算法的核心代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isleaf</span><span class="params">(<span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> !ls[t] &amp;&amp; !rs[t];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!x || !y) <span class="keyword">return</span> x + y;</span><br><span class="line">  <span class="keyword">if</span> (isleaf(x) &amp;&amp; isleaf(y)) &#123;</span><br><span class="line">    <span class="comment">//把y的信息合并到x上</span></span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">  &#125;</span><br><span class="line">  pushdown(x), pushdown(y);</span><br><span class="line">  ls[x] = merge(ls[x], ls[y]);</span><br><span class="line">  rs[x] = merge(rs[x], rs[y]);</span><br><span class="line">  pushup(x);</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体来说就是如果当前两个节点都存在，就需要暴力合并两个节点的左儿子和右儿子</p>
+<p>如果只有一个节点存在就可以直接返回了</p>
+<p>需要特别注意一下<strong>如果两个节点都存在但是都没有左右儿子直接合并儿子会丢失信息，这个时候就需要直接合并了</strong></p>
+<p>暴力合并那一步看起来复杂度是错的</p>
+<p>但是仔细想一想这个算法每一次运行用$O(1)$的代价删除1个节点</p>
+<p>因为是动态开点，所以最开始最多有$nlog(n)$个节点，合并完后节点数是$[1,n]$的级别</p>
+<p>所以复杂度是$O(nlog(n))$</p>
+<hr>
+<p>接下来进入正题</p>
+<h3 id="各种各样的线段树类别"><a href="#各种各样的线段树类别" class="headerlink" title="各种各样的线段树类别"></a>各种各样的线段树类别</h3><h4 id="1-普通线段树"><a href="#1-普通线段树" class="headerlink" title="1.普通线段树"></a>1.普通线段树</h4><p>很简单的线段树，维护的区间就是在原序列中的区间</p>
+<p>可以支持一些简单的操作：</p>
+<ol>
+<li>区间修改（加，减，乘）</li>
+<li>区间查询（和，最大值，最小值，gcd，lcm）</li>
+</ol>
+<p>注意一下维护的顺序就行了，其实并不难</p>
+<p>其实对于不同的操作，需要修改的只有维护信息的三个函数：$pushup,pushdown,pushnow$</p>
+<p>也可以支持一些不那么简单的操作：</p>
+<ol>
+<li>区间修改（区间开根号，区间位运算，<del>区间取max，区间取min</del>）</li>
+<li>区间查询（中位数，带权中位数，<del>历史最大值</del>）</li>
+</ol>
+<p>需要用到一些比较黑科技的东西，我也不太会</p>
+<h4 id="2-值域线段树"><a href="#2-值域线段树" class="headerlink" title="2.值域线段树"></a>2.值域线段树</h4><p>研究明白了值域线段树就可以初步感受到线段树的奥妙了</p>
+<p>首先这里的值域不要过于死板地理解</p>
+<p>值域可以是数的大小，时间，权值，甚至是相对大小关系？</p>
+<p>存在无限的可能</p>
+<h5 id="值域线段树小探究：全序集维护"><a href="#值域线段树小探究：全序集维护" class="headerlink" title="值域线段树小探究：全序集维护"></a>值域线段树小探究：全序集维护</h5><p>来科普一些简单的全序集维护知识吧</p>
+<p>维护全序集，大概是需要支持：</p>
+<ol>
+<li>插入一个数</li>
+<li>删除一个数</li>
+<li>查询一个数的排名</li>
+<li>查询排名是k的数</li>
+<li>查询一个数的前驱</li>
+<li>查询一个数的后继</li>
+</ol>
+<p>首先轻轻松松地离线离散化一下</p>
+<p>然后我们发现实际上需要支持地操作只有前四个，因为后两个都是可以通过前面转化得到的</p>
+<p>来看看怎么实现，因为线段树维护的是值域，所以我们只需要记录每个数的出现次数就可以了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> siz[N];</span><br></pre></td></tr></table></figure>
+<p>接下来：</p>
+<h6 id="简单的pushup"><a href="#简单的pushup" class="headerlink" title="简单的pushup"></a>简单的pushup</h6><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushup</span><span class="params">(<span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">  siz[t] = siz[LD] + siz[RD];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h6><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> vl)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">    siz[t]++;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (vl &lt;= mid) insert(LD, l, mid, vl);</span><br><span class="line">  <span class="keyword">else</span> insert(RD, mid + <span class="number">1</span>, r, vl);</span><br><span class="line">  pushup(t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h6><p>和插入差不多，就是$siz_t$减少1就可以了</p>
+<h6 id="查询一个数的排名"><a href="#查询一个数的排名" class="headerlink" title="查询一个数的排名"></a>查询一个数的排名</h6><p>每次如果当前节点大小大于mid就需要加上左边的数的个数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rank</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> vl)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (vl &lt;= mid) <span class="keyword">return</span> rank(LD, l, mid, vl);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> siz[LD] + rank(RD, mid + <span class="number">1</span>, r, vl);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="查询第k小"><a href="#查询第k小" class="headerlink" title="查询第k小"></a>查询第k小</h6><p>每次走到一个节点根据左儿子的大小判断一下该向哪边递归就可以了</p>
+<p>注意返回的是离散后的下标，需要还原成本身的值</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kth</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (siz[LD] &gt;= k) <span class="keyword">return</span> kth(LD, l, mid, k);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> kth(RD, mid + <span class="number">1</span>, r, k - siz[LD]);<span class="comment">//变成计算右儿子区间排名是k - siz[LD]的数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="前驱-amp-后继"><a href="#前驱-amp-后继" class="headerlink" title="前驱&amp;后继"></a>前驱&amp;后继</h6><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pre</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;<span class="comment">//传入离散后的下标</span></span><br><span class="line">  <span class="keyword">return</span> kth(<span class="number">1</span>, <span class="number">1</span>, n, rank(<span class="number">1</span>, <span class="number">1</span>, n, x) - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nxt</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;<span class="comment">//传入离散后的下标</span></span><br><span class="line">  <span class="keyword">return</span> kth(<span class="number">1</span>, <span class="number">1</span>, n, rank(<span class="number">1</span>, <span class="number">1</span>, n, x + <span class="number">1</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比平衡树好写到不知道哪里去有没有qwq？</p>
+<p>值域线段树虽然没有办法维护在原序列中的大小关系</p>
+<p>但是却可以优化许多根值域有关的计算过程，常见于线段树优化DP或线段树分治</p>
+<p>值域线段树还有许多奇妙的性质，后面慢慢探究</p>
+<hr>
+<h3 id="基于线段树实现的数据结构"><a href="#基于线段树实现的数据结构" class="headerlink" title="基于线段树实现的数据结构"></a>基于线段树实现的数据结构</h3><h4 id="1-主席树"><a href="#1-主席树" class="headerlink" title="1.主席树"></a>1.主席树</h4><p>也叫做<strong>可持久化线段树</strong></p>
+<p>最大的特点是<strong>必须离线且不支持修改，只支持查询</strong></p>
+<p>本身为什么叫可持久化线段树呢？</p>
+<p>因为每棵树代表的节点维护了一个前缀的信息</p>
+<p>这样就很方便进行区间查询（差分的思想）</p>
+<p>但是如果暴力开线段树会发生什么？</p>
+<p><strong>空间复杂度$O(n^2)$</strong>不可承受</p>
+<p>观察一下我们要维护的东西</p>
+<p>因为是一个前缀，所以有很大一部分信息都是可以从前面一棵树继承过来的</p>
+<p>那么我们考虑优化这个过程</p>
+<p>事实证明，每次我们插入一个信息实际上需要修改的只有一条长度是$log(n)$的链</p>
+<p>那么就把所有不需要新建的节点直接继承过来</p>
+<p>因此需要动态开点</p>
+<p>实现起来是这样的：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> &amp;t, <span class="keyword">int</span> last, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> pos)</span> </span>&#123;</span><br><span class="line">  t = ++tot;</span><br><span class="line">  <span class="comment">//t 从 last 继承一些信息</span></span><br><span class="line">  <span class="keyword">if</span> (l == r) <span class="keyword">return</span>;</span><br><span class="line">  ls[t] = ls[last];<span class="comment">//继承儿子信息</span></span><br><span class="line">  rs[t] = rs[last];</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="comment">//判断一下需要新建哪个节点？</span></span><br><span class="line">  <span class="keyword">if</span> (pos &lt;= mid) insert(ls[t], ls[last], l, mid, pos);</span><br><span class="line">  <span class="keyword">else</span> insert(rs[t], rs[last], mid + <span class="number">1</span>, r, pos);</span><br><span class="line">  pushup(t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通常主席树维护的信息都是前缀可减的，不然是没有办法查询的</p>
+<p>在这里举两个简单的例子，把刚才维护全序集的rank和kth照搬到区间上</p>
+<p>其实很简单，只需要每次查询的时候做差就可以了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rank</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> last, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> vl)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (vl &lt;= mid) <span class="keyword">return</span> rank(ls[t], ls[last], l, mid, vl);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> siz[ls[t]] - siz[ls[last]] + rank(rs[t], rs[last], mid + <span class="number">1</span>, r, vl);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kth</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> last, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) <span class="keyword">return</span> l;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>, sizl = siz[ls[t]] - siz[ls[last]];</span><br><span class="line">	<span class="keyword">if</span> (k &lt;= sizl) <span class="keyword">return</span> kth(ls[t], ls[last], l, mid, k);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> kth(rs[t], rs[last], mid + <span class="number">1</span>, r, k - sizl);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以发现主席树维护和权值线段树的维护区别就只有一个范围的限制</p>
+<p>但是主席树还有一些奇妙的用途？</p>
+<p>先说几个常见的主席树套路：</p>
+<h6 id="可持久化原数组顺序，内层使用权值线段树"><a href="#可持久化原数组顺序，内层使用权值线段树" class="headerlink" title="可持久化原数组顺序，内层使用权值线段树"></a>可持久化原数组顺序，内层使用权值线段树</h6><p>这样的主席树应该是最常见的</p>
+<p>可以解决一些和至于有关的区间查询问题    ，就是权值线段树的简单扩展</p>
+<h6 id="可持久化值域，内层使用原数组顺序"><a href="#可持久化值域，内层使用原数组顺序" class="headerlink" title="可持久化值域，内层使用原数组顺序"></a>可持久化值域，内层使用原数组顺序</h6><p>这个思路很神奇</p>
+<p>是从<a href="https://www.lydsy.com/JudgeOnline/problem.php?id=2653" target="_blank" rel="noopener">这道题</a>中学习到的</p>
+<p>有的时候我们不能直接维护有关值域的信息但是如果知道了当前的值是可以很方便地维护出原数组信息的时候</p>
+<p>我们就可以考虑用可持久化值域的方法，并在内层树中消除掉值域的影响进行解题</p>
+<p>主席树还有一些神奇的奇技淫巧……技巧篇给予讲解吧</p>
+<h4 id="2-树套树"><a href="#2-树套树" class="headerlink" title="2.树套树"></a>2.树套树</h4><p>感觉很套路但是绝对不想写的东西</p>
+<p>其实理解起来并不难</p>
+<p>有很多线段树套线段树，线段树套平衡树，主席树套线段树，线段树套主席树之类的东西</p>
+<p>一般是一眼就告诉你要树套树，然后就不想写了</p>
+<p>在这里给一个沙雕题的example</p>
+<p>给你一个矩阵，让你每次把一个矩形的中心节点权值改变乘成矩形中最大最小权值的平均数</p>
+<p>首先肯定是树套树维护的</p>
+<p>先把变量定义好</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LD(t) (t &lt;&lt; 1) </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RD(t) (t &lt;&lt; 1 | 1)</span></span><br><span class="line"><span class="keyword">int</span> maxv[N &lt;&lt; <span class="number">2</span>][N &lt;&lt; <span class="number">2</span>], minv[N &lt;&lt; <span class="number">2</span>][N &lt;&lt; <span class="number">2</span>];</span><br></pre></td></tr></table></figure>
+<p>然后把内层的pushup函数写一写</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushup</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">  maxv[id][t] = max(maxv[id][LD(t)], maxv[id][RD(t)]);</span><br><span class="line">  minv[id][t] = min(minv[id][LD(t)], minv[id][RD(t)]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于每个内层树，如果属于外层树的叶子节点，那么可以直接暴力更新，复杂度$O(log(n))$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">modify_y</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> pos, <span class="keyword">int</span> vl, <span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">    minv[id][t] = vl;</span><br><span class="line">    maxv[id][t] = vl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (pos &lt;= mid) modify_y(LD(t), l, mid, pos, vl, id);</span><br><span class="line">  <span class="keyword">else</span> modify_y(RD(t), mid + <span class="number">1</span>, r, pos, vl, id);</span><br><span class="line">  pushup(t, id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后如果要更新不是叶子节点外层树对应的内层树怎么办？</p>
+<p>考虑从外层树的儿子节点合并对应的信息，只需要修改有影响的一条链，复杂度$O(nlog(n))$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update_y</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> pos, <span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">    minv[id][t] = min(minv[LD(id)][t], minv[RD(id)][t]);</span><br><span class="line">    maxv[id][t] = max(maxv[LD(id)][t], maxv[RD(id)][t]);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (pos &lt;= mid) update_y(LD(t), l, mid, pos, id);</span><br><span class="line">  <span class="keyword">else</span> update_y(RD(t), mid + <span class="number">1</span>, r, pos, id);</span><br><span class="line">  pushup(t, id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内层树的查询就简单而套路了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">pi <span class="title">query_y</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r,<span class="keyword">int</span> ql, <span class="keyword">int</span> qr, <span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (ql &lt;= l &amp;&amp; r &lt;= qr) <span class="keyword">return</span> pi(maxv[id][t], minv[id][t]);</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (qr &lt;= mid) <span class="keyword">return</span> query_y(LD(t), l, mid, ql, qr, id);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (ql &gt; mid) <span class="keyword">return</span> query_y(RD(t), mid + <span class="number">1</span>, r, ql, qr, id);</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    pi ansl = query_y(LD(t), l, mid, ql, mid, id);</span><br><span class="line">    pi ansr = query_y(RD(t), mid + <span class="number">1</span>, r, mid + <span class="number">1</span>, qr, id);</span><br><span class="line">    <span class="keyword">return</span> pi(max(ansl.first, ansr.first), min(ansl.second, ansr.second));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>外层树修改的时候需要判断一下当前节点是不是叶子，如果是叶子直接更新y</p>
+<p>否则先递归问题再调用$update_y$函数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">modify_x</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> vl)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">    modify_y(<span class="number">1</span>, <span class="number">1</span>, n, y, vl, t);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (x &lt;= mid) modify_x(LD(t), l, mid, x, y, vl);</span><br><span class="line">  <span class="keyword">else</span> modify_x(RD(t), mid + <span class="number">1</span>, r, x, y, vl);</span><br><span class="line">  update_y(<span class="number">1</span>, <span class="number">1</span>, n, y, t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>外层树的查询就是如果被查询区间包含调用内层查询，否则递归问题，简单而套路</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">pi <span class="title">query_x</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> xl, <span class="keyword">int</span> xr, <span class="keyword">int</span> yl, <span class="keyword">int</span> yr)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (xl &lt;= l &amp;&amp; r &lt;= xr) <span class="keyword">return</span> query_y(<span class="number">1</span>, <span class="number">1</span>, n, yl, yr, t);</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (xr &lt;= mid) <span class="keyword">return</span> query_x(LD(t), l, mid, xl, xr, yl, yr);</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (xl &gt; mid) <span class="keyword">return</span> query_x(RD(t), mid + <span class="number">1</span>, r, xl, xr, yl, yr);</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    pi ansl = query_x(LD(t), l, mid, xl, mid, yl, yr);</span><br><span class="line">    pi ansr = query_x(RD(t), mid + <span class="number">1</span>, r, mid + <span class="number">1</span>, xr, yl, yr);</span><br><span class="line">    <span class="keyword">return</span> pi(max(ansl.first, ansr.first), min(ansl.second, ansr.second));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>树套树也有很多变形</p>
+<p>但无非就是外层处理到内层递归的简单套路，多写几道题体会一下就可以了</p>
+<p>只要代码实现练习到位是很简单的</p>
+<p>所以千万不要怕这个东西</p>
+<h4 id="3-李超树"><a href="#3-李超树" class="headerlink" title="3.李超树"></a>3.李超树</h4><p>李超树是一种用来维护线段/函数的神奇数据结构</p>
+<p>简单李超树支持查询一个x对应的所有y值的相关信息</p>
+<p>用线段树来存储每个区间的<strong>相对最优解</strong></p>
+<p>这里用到了一个<strong>永久化标记的思想</strong>，这个在技巧篇讲……</p>
+<p>这个东西很好啊，每个节点记录区间的相对最优解之后</p>
+<p>直接dfs到叶子节点把路径上经过的所有节点的权值全部取max就可以了</p>
+<p>正确性非常显然，但是怎么维护呢？</p>
+<p>我们假设当前要更新的是一个节点$p_t$，那么如果$p_t$的k大于拿来更新的$val$的k</p>
+<p>如果在$mid$处$p_t$大于$val$，那么显然在$[mid+1,r]$这个区间里val不可能比$p_t$更优</p>
+<p>所以就把$val$递归到左区间更新</p>
+<p>如果在$mid$处$p_t$小于$val$，那么在$[l,mid]$这个区间$p_t$不可能比$val$更优</p>
+<p>所以就把$p_t$递归到右区间，再把$p_t$替换成val就可以了</p>
+<p>只需要按照k的大小关系分类讨论一下就可以了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Line</span> &#123;</span></span><br><span class="line">  <span class="keyword">double</span> k, b;</span><br><span class="line">&#125; p[(MAXN &lt;&lt; <span class="number">2</span>) + <span class="number">10</span>];</span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">calc</span><span class="params">(<span class="keyword">int</span> x, Line a)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a.k * (<span class="keyword">double</span>) x + a.b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">cmp</span><span class="params">(<span class="keyword">int</span> x, Line a, Line b)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> calc(x, a) &gt; calc(x, b); </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">modify</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, Line vl)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">    <span class="keyword">if</span> (cmp(l, vl, p[t])) p[t] = vl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (p[t].k &lt;= vl.k) &#123;</span><br><span class="line">    <span class="keyword">if</span> (cmp(mid, vl, p[t])) &#123;</span><br><span class="line">      modify(LD, l, mid, p[t]);</span><br><span class="line">      p[t] = vl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      modify(RD, mid + <span class="number">1</span>, r, vl);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (cmp(mid, vl, p[t])) &#123;</span><br><span class="line">      modify(RD, mid + <span class="number">1</span>, r, p[t]);</span><br><span class="line">      p[t] = vl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      modify(LD, l, mid, vl);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> pos)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (l == r) <span class="keyword">return</span> calc(pos, p[t]);</span><br><span class="line">  <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (pos &lt;= mid) <span class="keyword">return</span> max(calc(pos, p[t]), query(LD, l, mid, pos));</span><br><span class="line">  <span class="keyword">else</span>  <span class="keyword">return</span> max(calc(pos, p[t]), query(RD, mid + <span class="number">1</span>, r, pos));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-ZKW线段树"><a href="#4-ZKW线段树" class="headerlink" title="4.ZKW线段树"></a>4.ZKW线段树</h4><p>我觉得严格意义来说这个算是奇技淫巧</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构-线段树/" rel="tag"># 数据结构-线段树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blogs/点分治/" rel="prev" title="算法-点分治">
+                算法-点分治 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/o_id.jpg" alt="dream_maker">
+            
+              <p class="site-author-name" itemprop="name">dream_maker</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/dream-maker-yk/dream-maker-yk.github.io" title="GitHub &rarr; https://github.com/dream-maker-yk/dream-maker-yk.github.io"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:2567348204@qq.com" title="E-Mail &rarr; mailto:2567348204@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.cnblogs.com/dream-maker-yk/" title="cnblogs &rarr; https://www.cnblogs.com/dream-maker-yk/" rel="noopener" target="_blank"><i class="fa fa-fw fa-bandcamp"></i>cnblogs</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/Dream_maker_yk" title="csdn &rarr; https://blog.csdn.net/Dream_maker_yk" rel="noopener" target="_blank"><i class="fa fa-fw fa-bookmark"></i>csdn</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/yyf0309" title="https://www.cnblogs.com/yyf0309" rel="noopener" target="_blank">yyf</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/qq_35923186" title="https://blog.csdn.net/qq_35923186" rel="noopener" target="_blank">wyp</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://buzhibujue.cf/" title="https://buzhibujue.cf/" rel="noopener" target="_blank">lb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://me.csdn.net/john_zyj" title="https://me.csdn.net/john_zyj" rel="noopener" target="_blank">zyj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://spacevortex.cf/" title="http://spacevortex.cf/" rel="noopener" target="_blank">yxy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://me.csdn.net/qq_42834308" title="https://me.csdn.net/qq_42834308" rel="noopener" target="_blank">hjk</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/sjkmost" title="https://www.cnblogs.com/sjkmost" rel="noopener" target="_blank">trz</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dangxingyu.com/" title="https://dangxingyu.com/" rel="noopener" target="_blank">dxy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/aziint" title="https://www.cnblogs.com/aziint" rel="noopener" target="_blank">azi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/dreaming__ldx" title="https://blog.csdn.net/dreaming__ldx" rel="noopener" target="_blank">ldx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#前置技能：静态线段树维护"><span class="nav-number"></span> <span class="nav-text">前置技能：静态线段树维护</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能0：数据表示方法"><span class="nav-number">1.</span> <span class="nav-text">前置技能0：数据表示方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能1：维护信息"><span class="nav-number">2.</span> <span class="nav-text">前置技能1：维护信息</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#前置技能1-1：向上维护标记"><span class="nav-number">2.1.</span> <span class="nav-text">前置技能1-1：向上维护标记</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#前置技能1-2：向下传递标记"><span class="nav-number">2.2.</span> <span class="nav-text">前置技能1-2：向下传递标记</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能2：建树"><span class="nav-number">3.</span> <span class="nav-text">前置技能2：建树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能3：单点修改"><span class="nav-number">4.</span> <span class="nav-text">前置技能3：单点修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能4：单点查询"><span class="nav-number">5.</span> <span class="nav-text">前置技能4：单点查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能5：区间修改"><span class="nav-number">6.</span> <span class="nav-text">前置技能5：区间修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能6：区间查询"><span class="nav-number">7.</span> <span class="nav-text">前置技能6：区间查询</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前置技能拓展：动态开点线段树"><span class="nav-number"></span> <span class="nav-text">前置技能拓展：动态开点线段树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能拓展0：数据表示方法"><span class="nav-number">1.</span> <span class="nav-text">前置技能拓展0：数据表示方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能拓展1：插入节点信息"><span class="nav-number">2.</span> <span class="nav-text">前置技能拓展1：插入节点信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前置技能拓展2：动态开点线段树的合并"><span class="nav-number">3.</span> <span class="nav-text">前置技能拓展2：动态开点线段树的合并</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各种各样的线段树类别"><span class="nav-number"></span> <span class="nav-text">各种各样的线段树类别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-普通线段树"><span class="nav-number">1.</span> <span class="nav-text">1.普通线段树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-值域线段树"><span class="nav-number">2.</span> <span class="nav-text">2.值域线段树</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#值域线段树小探究：全序集维护"><span class="nav-number">2.1.</span> <span class="nav-text">值域线段树小探究：全序集维护</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#简单的pushup"><span class="nav-number">2.1.1.</span> <span class="nav-text">简单的pushup</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#插入"><span class="nav-number">2.1.2.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#删除"><span class="nav-number">2.1.3.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#查询一个数的排名"><span class="nav-number">2.1.4.</span> <span class="nav-text">查询一个数的排名</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#查询第k小"><span class="nav-number">2.1.5.</span> <span class="nav-text">查询第k小</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#前驱-amp-后继"><span class="nav-number">2.1.6.</span> <span class="nav-text">前驱&amp;后继</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于线段树实现的数据结构"><span class="nav-number"></span> <span class="nav-text">基于线段树实现的数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-主席树"><span class="nav-number">1.</span> <span class="nav-text">1.主席树</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#可持久化原数组顺序，内层使用权值线段树"><span class="nav-number">1.0.1.</span> <span class="nav-text">可持久化原数组顺序，内层使用权值线段树</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#可持久化值域，内层使用原数组顺序"><span class="nav-number">1.0.2.</span> <span class="nav-text">可持久化值域，内层使用原数组顺序</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-树套树"><span class="nav-number">2.</span> <span class="nav-text">2.树套树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-李超树"><span class="nav-number">3.</span> <span class="nav-text">3.李超树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-ZKW线段树"><span class="nav-number">4.</span> <span class="nav-text">4.ZKW线段树</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dream_maker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/o_id.jpg?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/o_id.jpg?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/o_id.jpg?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/o_id.jpg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="DP优化1.矩阵快速幂优化DP当DP的转移可以用转移矩阵表示出来的时候，这个DP一般都是可以用矩阵快速幂来进行优化的 而且矩阵快速幂优化DP的特征非常的明显，一般是有一维状态数特别大，一维状态数特别小 然后建立转移矩阵的小技巧就是$trans_{i,j}$表示从状态i转移到状态j的贡献 然后矩阵快速幂还可以把乘法变成加法，加法变成取min/max，可以证明这样还是满足结合律的，实际的dp含义也不会">
+<meta name="keywords" content="DP-优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DP优化">
+<meta property="og:url" content="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/DP优化/index.html">
+<meta property="og:site_name" content="Dream_maker&#39;s blog">
+<meta property="og:description" content="DP优化1.矩阵快速幂优化DP当DP的转移可以用转移矩阵表示出来的时候，这个DP一般都是可以用矩阵快速幂来进行优化的 而且矩阵快速幂优化DP的特征非常的明显，一般是有一维状态数特别大，一维状态数特别小 然后建立转移矩阵的小技巧就是$trans_{i,j}$表示从状态i转移到状态j的贡献 然后矩阵快速幂还可以把乘法变成加法，加法变成取min/max，可以证明这样还是满足结合律的，实际的dp含义也不会">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-12-09T08:26:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DP优化">
+<meta name="twitter:description" content="DP优化1.矩阵快速幂优化DP当DP的转移可以用转移矩阵表示出来的时候，这个DP一般都是可以用矩阵快速幂来进行优化的 而且矩阵快速幂优化DP的特征非常的明显，一般是有一维状态数特别大，一维状态数特别小 然后建立转移矩阵的小技巧就是$trans_{i,j}$表示从状态i转移到状态j的贡献 然后矩阵快速幂还可以把乘法变成加法，加法变成取min/max，可以证明这样还是满足结合律的，实际的dp含义也不会">
+
+
+
+
+
+
+  <link rel="canonical" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/DP优化/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>DP优化 | Dream_maker's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/dream-maker-yk"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dream_maker's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/DP优化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dream_maker">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/o_id.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dream_maker's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DP优化
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-09 13:13:48 / Modified: 16:26:14" itemprop="dateCreated datePublished" datetime="2018-12-09T13:13:48+08:00">2018-12-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/知识点整理/" itemprop="url" rel="index"><span itemprop="name">知识点整理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="DP优化"><a href="#DP优化" class="headerlink" title="DP优化"></a>DP优化</h1><h2 id="1-矩阵快速幂优化DP"><a href="#1-矩阵快速幂优化DP" class="headerlink" title="1.矩阵快速幂优化DP"></a>1.矩阵快速幂优化DP</h2><p>当DP的转移可以用转移矩阵表示出来的时候，这个DP一般都是可以用矩阵快速幂来进行优化的</p>
+<p>而且矩阵快速幂优化DP的特征非常的明显，一般是<strong>有一维状态数特别大，一维状态数特别小</strong></p>
+<p>然后建立转移矩阵的小技巧就是$trans_{i,j}$表示从状态i转移到状态j的贡献</p>
+<p>然后矩阵快速幂还可以把乘法变成加法，加法变成取min/max，可以证明这样还是满足结合律的，实际的dp含义也不会被改变</p>
+<p>是一种优化转移的很好的方式</p>
+<p>当然，矩阵维护DP也可以扩展到动态DP，在这里跟题目无关就不讲了</p>
+<h2 id="2-数据结构优化DP"><a href="#2-数据结构优化DP" class="headerlink" title="2.数据结构优化DP"></a>2.数据结构优化DP</h2><p>数据结构优化DP</p>
+<p>一般都是直接在数据结构里面维护每个DP值（和那个位置上对应的贡献），这个时候需要把移动指针产生的贡献全部拆分开来，然后如果贡献的叠加范围是存在某个特殊的性质（比如区间，或者某个数的倍数）就可以选择相应的数据结构进行维护</p>
+<p>数据结构的使用非常灵活，需要多加练习才可以熟练掌握</p>
+<h2 id="3-决策单调性优化"><a href="#3-决策单调性优化" class="headerlink" title="3.决策单调性优化"></a>3.决策单调性优化</h2><h3 id="3-1-单调队列-单调栈优化"><a href="#3-1-单调队列-单调栈优化" class="headerlink" title="3.1 单调队列/单调栈优化"></a>3.1 单调队列/单调栈优化</h3><p>一种比较简单的实现形式，通常是有比较显然的决策单调性</p>
+<p>通常有两种方式：</p>
+<h4 id="3-1-1-维护点值"><a href="#3-1-1-维护点值" class="headerlink" title="3.1.1 维护点值"></a>3.1.1 维护点值</h4><p>数据结构中只需要存点，然后可以直接每次取维护的队首/栈顶来进行更新，维护简单</p>
+<h4 id="3-1-2-维护区间"><a href="#3-1-2-维护区间" class="headerlink" title="3.1.2 维护区间"></a>3.1.2 维护区间</h4><p>我们发现每个决策点的最优贡献是一个区间</p>
+<p>那么我们就维护一个很多个区间组成的队列</p>
+<p>这个队列每次加入的时候就可以进行比较并维护</p>
+<p>具体实现是这样的：</p>
+<ul>
+<li>如果当前决策点在最后一个位置都不会比最后一个最优区间优秀，说明他没有贡献</li>
+<li>如果比当前最后一个区间全部的位置都要更优就可以直接删除最后的区间</li>
+<li>如果只比当前最后的区间的一部分更优就二分出当前结点比上一个节点优的最早的节点，并把从二分出的节点到末尾区间的最优贡献点变成当前结点</li>
+</ul>
+<p><strong>3.1.2的单调队列还可以用来维护四边形不等式优化的DP</strong></p>
+<h3 id="3-2-斜率优化"><a href="#3-2-斜率优化" class="headerlink" title="3.2 斜率优化"></a>3.2 斜率优化</h3><p>斜率优化的一个典型形式就是$dp_{i}=dp_{j}+a_i*b_j+c_j$</p>
+<p>这时候因为出现了$a_i*b_j$，所以如果可以优化一般都是斜率优化（大概是因为其他的优化方式都不涉及乘除）</p>
+<p>然后就可以非常无脑的把这个式子用一次函数式表示出来</p>
+<p>比如上面的这个式子经过移项变成$-a_i*b_j+dp_{i}=dp_j+c_j$</p>
+<p>观察一下这个式子发现如果令</p>
+<ul>
+<li>$y = dp_j +c_j$</li>
+<li>$x=b_j$</li>
+<li>$k=-a_i$</li>
+<li>$b=dp_i$</li>
+</ul>
+<p>那么原来的式子实际上就变成了$y=kx+b$</p>
+<p>我们显然要求的就是截距b的某个极值</p>
+<p>这样我们就可以把一个决策点j转化成二维平面上的一个点$(b_j,dp_j+c_j)$</p>
+<p>我们每次要用斜率$-a_i$去截出一个最大的$dp_i$</p>
+<p>很显然这个最优决策点一定存在于凸壳上面，所以直接用单调队列/单调栈维护出凸壳就可以了</p>
+<p>然后根据题目看需不需要在凸壳上二分出最优的决策点就可以了</p>
+<p>至于是上凸壳还是下凸壳，就可以根据k的单调性确定了</p>
+<p><strong>但是在x坐标$b_j$不单调的时候就只有使用3.2.2的方法了</strong></p>
+<h3 id="3-3-分治优化"><a href="#3-3-分治优化" class="headerlink" title="3.3 分治优化"></a>3.3 分治优化</h3><h4 id="3-3-1-普通分治"><a href="#3-3-1-普通分治" class="headerlink" title="3.3.1 普通分治"></a>3.3.1 普通分治</h4><p>有的时候我们不方便找到决策点但是可以知道，如果$i$的决策点是$p_i$，那么对于$j&lt;i&lt;k$有$p_j\le p_i\le p_k$</p>
+<p>那我们直接对于mid包里找到$p_{min}$然后递归成区间求解就可以了</p>
+<h4 id="3-3-2-CDQ分治"><a href="#3-3-2-CDQ分治" class="headerlink" title="3.3.2 CDQ分治"></a>3.3.2 CDQ分治</h4><p>这里对应斜率优化的时候$x$坐标不单调的情况</p>
+<p>因为x不单调所以我们没有办法<del>（其实也有办法）</del>动态维护凸壳所以我们再用分治解决这个问题</p>
+<p>首先选择一个mid，然后递归求解左边区间的问题，这个时候我们就已经知道了左边区间的所有的DP值</p>
+<p>然后于是就可以把左边的所有点按照x归并排序之后建成凸壳并用右边的点进行询问，询问完了就可以继续递归右子区间进行解题了</p>
+<p>分治复杂度是$nlogn$的</p>
+<h3 id="3-4-四边形不等式优化"><a href="#3-4-四边形不等式优化" class="headerlink" title="3.4 四边形不等式优化"></a>3.4 四边形不等式优化</h3><p>看起来是最简单的结构，但是用到了最复杂的思想</p>
+<p>一般是需要证明一个这样的式子：</p>
+<p>$w_{i,j+1}+w_{i+1,j}\le w_{i, j}+ w_{i+1,j+1}$</p>
+<p>所以就可以得到</p>
+<p>$w_{i+1,j}-w_{i+1,j+1}\le w_{i,j}-w_{i,j+1}$</p>
+<p>$w_{i,j+1}-w_{i+1,j+1}\le w_{i,j}-w_{i+1,j}$</p>
+<p>推导出的通式就是：$对于i&lt;i’\le j&lt;j’,有w_{i,j}+w_{i’,j’}≤w_{i’,j}+w_{i,j’} $</p>
+<p>然后对于一个常见的转移方程$dp_i=dp_j+w_{i,j}$</p>
+<p>设i的决策点是$p_i$，那么i-1的决策点$p_{i-1}$一定满足：</p>
+<p>任意的$k&lt;p_{i-1}$</p>
+<p>有$dp_{p_{i-1}}+w_{p_{i-1},i-1}\le dp_{k}+w_{k,i-1}$</p>
+<p>即$w_{p_{i-1},i-1}-w_{k,i-1}\le dp_{k}-dp_{p_{i-1}}$</p>
+<p>如果w满足平行四边形不等式，那么也一定有：</p>
+<p>$w_{p_{i-1},i}-w_{k,i}\le dp_{k}-dp_{p_{i-1}}$</p>
+<p>所以有$dp_{p_{i-1}}+w_{p_{i-1},i} \le dp_{k}+w_{k,i}$</p>
+<p>就证明了单调性，因为这个东西也是区间覆盖</p>
+<p>所以还是可以用单调队列进行维护的</p>
+<p>完结撒花</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DP-优化/" rel="tag"># DP-优化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blogs/组合数学阅读笔记-第2章-排列与组合/" rel="next" title="组合数学阅读笔记-第2章:排列与组合">
+                <i class="fa fa-chevron-left"></i> 组合数学阅读笔记-第2章:排列与组合
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blogs/多项式-FFT 残疾人手册/" rel="prev" title="FFT残疾人手册">
+                FFT残疾人手册 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/o_id.jpg" alt="dream_maker">
+            
+              <p class="site-author-name" itemprop="name">dream_maker</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/dream-maker-yk/dream-maker-yk.github.io" title="GitHub &rarr; https://github.com/dream-maker-yk/dream-maker-yk.github.io"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:2567348204@qq.com" title="E-Mail &rarr; mailto:2567348204@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.cnblogs.com/dream-maker-yk/" title="cnblogs &rarr; https://www.cnblogs.com/dream-maker-yk/" rel="noopener" target="_blank"><i class="fa fa-fw fa-bandcamp"></i>cnblogs</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/Dream_maker_yk" title="csdn &rarr; https://blog.csdn.net/Dream_maker_yk" rel="noopener" target="_blank"><i class="fa fa-fw fa-bookmark"></i>csdn</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/yyf0309" title="https://www.cnblogs.com/yyf0309" rel="noopener" target="_blank">yyf</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/qq_35923186" title="https://blog.csdn.net/qq_35923186" rel="noopener" target="_blank">wyp</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://buzhibujue.cf/" title="https://buzhibujue.cf/" rel="noopener" target="_blank">lb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://me.csdn.net/john_zyj" title="https://me.csdn.net/john_zyj" rel="noopener" target="_blank">zyj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://spacevortex.cf/" title="http://spacevortex.cf/" rel="noopener" target="_blank">yxy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://me.csdn.net/qq_42834308" title="https://me.csdn.net/qq_42834308" rel="noopener" target="_blank">hjk</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/sjkmost" title="https://www.cnblogs.com/sjkmost" rel="noopener" target="_blank">trz</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dangxingyu.com/" title="https://dangxingyu.com/" rel="noopener" target="_blank">dxy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/aziint" title="https://www.cnblogs.com/aziint" rel="noopener" target="_blank">azi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/dreaming__ldx" title="https://blog.csdn.net/dreaming__ldx" rel="noopener" target="_blank">ldx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DP优化"><span class="nav-number">1.</span> <span class="nav-text">DP优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-矩阵快速幂优化DP"><span class="nav-number">1.1.</span> <span class="nav-text">1.矩阵快速幂优化DP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-数据结构优化DP"><span class="nav-number">1.2.</span> <span class="nav-text">2.数据结构优化DP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-决策单调性优化"><span class="nav-number">1.3.</span> <span class="nav-text">3.决策单调性优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-单调队列-单调栈优化"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 单调队列/单调栈优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-1-维护点值"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">3.1.1 维护点值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-2-维护区间"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">3.1.2 维护区间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-斜率优化"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 斜率优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-分治优化"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 分治优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-普通分治"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">3.3.1 普通分治</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-2-CDQ分治"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">3.3.2 CDQ分治</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-四边形不等式优化"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 四边形不等式优化</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dream_maker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

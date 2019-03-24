@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/o_id.jpg?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/o_id.jpg?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/o_id.jpg?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/o_id.jpg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="多项式运算本文所讲所有的多项式运算全部基于vector的使用 1typedef vector&amp;lt;int&amp;gt; Poly; 0.思想自认为多项式最重要的思想就是倍增了 其次就是分治 建议先看看fft残疾人手册和ntt残疾人手册 1.多项式加法$C(n)=A(n)+B(n)$ 就是系数相加，非常简单的实现 123456Poly add(Poly a, Poly b) &amp;#123;  a.resi">
+<meta name="keywords" content="多项式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多项式运算">
+<meta property="og:url" content="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/多项式运算/index.html">
+<meta property="og:site_name" content="Dream_maker&#39;s blog">
+<meta property="og:description" content="多项式运算本文所讲所有的多项式运算全部基于vector的使用 1typedef vector&amp;lt;int&amp;gt; Poly; 0.思想自认为多项式最重要的思想就是倍增了 其次就是分治 建议先看看fft残疾人手册和ntt残疾人手册 1.多项式加法$C(n)=A(n)+B(n)$ 就是系数相加，非常简单的实现 123456Poly add(Poly a, Poly b) &amp;#123;  a.resi">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-01-06T12:06:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多项式运算">
+<meta name="twitter:description" content="多项式运算本文所讲所有的多项式运算全部基于vector的使用 1typedef vector&amp;lt;int&amp;gt; Poly; 0.思想自认为多项式最重要的思想就是倍增了 其次就是分治 建议先看看fft残疾人手册和ntt残疾人手册 1.多项式加法$C(n)=A(n)+B(n)$ 就是系数相加，非常简单的实现 123456Poly add(Poly a, Poly b) &amp;#123;  a.resi">
+
+
+
+
+
+
+  <link rel="canonical" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/多项式运算/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>多项式运算 | Dream_maker's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/dream-maker-yk"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dream_maker's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/多项式运算/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dream_maker">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/o_id.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dream_maker's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">多项式运算
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-06 17:42:29 / Modified: 20:06:52" itemprop="dateCreated datePublished" datetime="2019-01-06T17:42:29+08:00">2019-01-06</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/知识点整理/" itemprop="url" rel="index"><span itemprop="name">知识点整理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="多项式运算"><a href="#多项式运算" class="headerlink" title="多项式运算"></a>多项式运算</h1><p>本文所讲所有的多项式运算全部基于vector的使用</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; Poly;</span><br></pre></td></tr></table></figure>
+<h2 id="0-思想"><a href="#0-思想" class="headerlink" title="0.思想"></a>0.思想</h2><p>自认为多项式最重要的思想就是倍增了</p>
+<p>其次就是分治</p>
+<p>建议先看看<code>fft残疾人手册</code>和<code>ntt残疾人手册</code></p>
+<h2 id="1-多项式加法"><a href="#1-多项式加法" class="headerlink" title="1.多项式加法"></a>1.多项式加法</h2><p>$C(n)=A(n)+B(n)$</p>
+<p>就是系数相加，非常简单的实现</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">add</span><span class="params">(Poly a, Poly b)</span> </span>&#123;</span><br><span class="line">  a.resize(max(a.size(), b.size()));</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; b.size(); i++)</span><br><span class="line">    a[i] = add(a[i], b[i]);</span><br><span class="line">  <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-多项式减法"><a href="#2-多项式减法" class="headerlink" title="2.多项式减法"></a>2.多项式减法</h2><p>$C(n)=A(n)-B(n)$</p>
+<p>系数相减，依旧简单的实现</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">sub</span><span class="params">(Poly a, Poly b)</span> </span>&#123;</span><br><span class="line">  a.resize(max(a.size(), b.size()));</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; b.size(); i++)</span><br><span class="line">    a[i] = sub(a[i], b[i]);</span><br><span class="line">  <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-多项式乘法"><a href="#3-多项式乘法" class="headerlink" title="3.多项式乘法"></a>3.多项式乘法</h2><p>$C(n)=\sum_{i=0}^nA(i)B(n-i)$</p>
+<p>就是ntt</p>
+<p>需要预处理原根的次幂</p>
+<p>交换位置的时候动态处理就好，因为在倍增过程中ntt的长度不一样</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> w[<span class="number">2</span>][N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; (<span class="number">1</span> &lt;&lt; <span class="number">18</span>); i &lt;&lt;= <span class="number">1</span>) &#123;</span><br><span class="line">    w[<span class="number">1</span>][i] = w[<span class="number">0</span>][i] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> wn;</span><br><span class="line">    wn = fast_pow(G, (Mod - <span class="number">1</span>) / (i &lt;&lt; <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; i; j++) </span><br><span class="line">      w[<span class="number">1</span>][i + j] = mul(wn, w[<span class="number">1</span>][i + j - <span class="number">1</span>]);</span><br><span class="line">    wn = fast_pow(G, Mod - <span class="number">1</span> - (Mod - <span class="number">1</span>) / (i &lt;&lt; <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; i; j++)</span><br><span class="line">      w[<span class="number">0</span>][i + j] = mul(wn, w[<span class="number">0</span>][i + j - <span class="number">1</span>]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">transform</span><span class="params">(<span class="keyword">int</span> *t, <span class="keyword">int</span> len, <span class="keyword">int</span> typ)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>, k; j &lt; len; j++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (j &gt; i) swap(t[i], t[j]);</span><br><span class="line">    <span class="keyword">for</span> (k = (len &gt;&gt; <span class="number">1</span>); k &amp; i; k &gt;&gt;= <span class="number">1</span>) i ^= k;</span><br><span class="line">    i ^= k;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; len; i &lt;&lt;= <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; len; j += (i &lt;&lt; <span class="number">1</span>)) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">        <span class="keyword">int</span> x = t[j + k], y = mul(t[j + k + i], w[typ][i + k]);</span><br><span class="line">        t[j + k] = add(x, y);</span><br><span class="line">        t[j + k + i] = sub(x, y);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (typ) <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">int</span> inv = fast_pow(len, Mod - <span class="number">2</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</span><br><span class="line">    t[i] = mul(t[i], inv);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Poly <span class="title">mul</span><span class="params">(<span class="keyword">const</span> Poly &amp;a, <span class="keyword">const</span> Poly &amp;b)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> len = a.size() + b.size() + <span class="number">1</span>;</span><br><span class="line">  len = <span class="number">1</span> &lt;&lt; (<span class="keyword">int</span>) <span class="built_in">ceil</span>(log2(len));</span><br><span class="line">  <span class="keyword">static</span> Poly prea, preb;</span><br><span class="line">  prea = a;</span><br><span class="line">  preb = b;</span><br><span class="line">  prea.resize(len);</span><br><span class="line">  preb.resize(len); </span><br><span class="line">  transform(&amp;prea[<span class="number">0</span>], len, <span class="number">1</span>);</span><br><span class="line">  transform(&amp;preb[<span class="number">0</span>], len, <span class="number">1</span>); </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</span><br><span class="line">    prea[i] = mul(prea[i], preb[i]);</span><br><span class="line">  transform(&amp;prea[<span class="number">0</span>], len, <span class="number">0</span>);</span><br><span class="line">  clean(prea);</span><br><span class="line">  <span class="keyword">return</span> prea;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-多项式求逆"><a href="#4-多项式求逆" class="headerlink" title="4.多项式求逆"></a>4.多项式求逆</h2><p>对于多项式$A$，我们要求出$B$</p>
+<p>满足$A\ast B=1(\mod x^{n+1})$</p>
+<p>这里的$\mod x^n$是保留前$n+1$个系数的意思，不然$B(n)$会有无穷项</p>
+<p>我们假设已经求出了$B’$满足$A\ast B’=1(\mod x^{\lceil\frac{n}{2}\rceil})$</p>
+<p>那么因为存在$A\ast B=1(\mod x^{\lceil\frac{n}{2}\rceil})$</p>
+<p>所以$A\ast (B-B’)=0(\mod x^{\lceil\frac{n}{2}\rceil})$</p>
+<p>又因为A不是0，所以$(B-B’)=0(\mod x^{\lceil\frac{n}{2}\rceil})$</p>
+<p>两边同时平方（模数也要平方）</p>
+<p>$B^2-2\ast B\ast B’+B’^2=0(\mod x^n)$</p>
+<p>因为有个$B^2$不好计算，所以把等式两边同时乘上$A$</p>
+<p>得到$B-2\ast B’+A\ast B’^2=0(\mod x^n)$</p>
+<p>即$B=2\ast B’-A\ast B’^2(\mod x^n)$</p>
+<p>这样就可以递归求解了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">inv</span><span class="params">(Poly a, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">1</span>) <span class="keyword">return</span> Poly(<span class="number">1</span>, fast_pow(a[<span class="number">0</span>], Mod - <span class="number">2</span>));</span><br><span class="line">  <span class="keyword">int</span> len = <span class="number">1</span> &lt;&lt; ((<span class="keyword">int</span>) <span class="built_in">ceil</span>(log2(n)) + <span class="number">1</span>);</span><br><span class="line">  Poly x = inv(a, (n + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>), y;</span><br><span class="line">  x.resize(len);</span><br><span class="line">  y.resize(len);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    y[i] = a[i];</span><br><span class="line">  transform(&amp;x[<span class="number">0</span>], len, <span class="number">1</span>);</span><br><span class="line">  transform(&amp;y[<span class="number">0</span>], len, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</span><br><span class="line">    x[i] = mul(x[i], sub(<span class="number">2</span>, mul(x[i], y[i])));</span><br><span class="line">  transform(&amp;x[<span class="number">0</span>], len, <span class="number">0</span>);</span><br><span class="line">  x.resize(n);</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Poly <span class="title">inv</span><span class="params">(Poly a)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> inv(a, a.size());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-多项式除法"><a href="#5-多项式除法" class="headerlink" title="5.多项式除法"></a>5.多项式除法</h2><p>对于n次多项式$A$和m次多项式$B$，构造出小于n-m次多项式$C$和小于m次的多项式$D$</p>
+<p>满足$A=B*C+D$</p>
+<p>我们考虑一下多项式$A$的系数反转形式记做$RevA$</p>
+<p>所以$RevA(x)=x^nA(\frac{1}{x})$</p>
+<p>我们把原来的式子左右同时乘上$x^n$</p>
+<p>得到$A(\frac{1}{x})\ast x^n=B(\frac{1}{x})\ast C(\frac{1}{x})\ast x^n+D(\frac{1}{x})\ast x^n$</p>
+<p>所以$RevA(x)=RevB(x)\ast RevC(x)+x^{n-m+1}RevD(x)$</p>
+<p>在$\mod x^{n-m+1}$的意义下发现$RevD$就没了，然而并不影响$RevA,RevB,RevC$</p>
+<p>所以我们只需要求出$RevB$在$\mod x^{n-m+1}$意义下的逆元，然后就可以算出$RevC$和$RevD$</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">rev</span><span class="params">(Poly a)</span> </span>&#123;</span><br><span class="line">  clean(a);</span><br><span class="line">  reverse(a.begin(), a.end());</span><br><span class="line">  <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">div</span><span class="params">(Poly a, Poly b, Poly &amp;c, Poly &amp;d)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = a.size(), m = b.size();</span><br><span class="line">  Poly ra = rev(a), rb = rev(b);</span><br><span class="line">  ra.resize(n - m + <span class="number">1</span>);</span><br><span class="line">  rb.resize(n - m + <span class="number">1</span>);</span><br><span class="line">  c = mul(ra, inv(rb));</span><br><span class="line">  c.resize(n - m + <span class="number">1</span>);</span><br><span class="line">  c = rev(c);  </span><br><span class="line">  d = sub(a, mul(b, c));</span><br><span class="line">  clean(c), clean(d);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6-多项式求导"><a href="#6-多项式求导" class="headerlink" title="6.多项式求导"></a>6.多项式求导</h2><p>因为多项式的形式很简单，所以求导直接可以模拟出来</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">deri</span><span class="params">(Poly a)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = a.size();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)</span><br><span class="line">    a[i - <span class="number">1</span>] = mul(a[i], i);</span><br><span class="line">  a.resize(n - <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7-多项式积分"><a href="#7-多项式积分" class="headerlink" title="7.多项式积分"></a>7.多项式积分</h2><p>积分也直接模拟吧。。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">inte</span><span class="params">(Poly a)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = a.size();</span><br><span class="line">  a.resize(n + <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = n; i &gt;= <span class="number">1</span>; i--)</span><br><span class="line">    a[i] = mul(a[i - <span class="number">1</span>], fast_pow(i, Mod - <span class="number">2</span>));</span><br><span class="line">  a[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="8-多项式对数函数"><a href="#8-多项式对数函数" class="headerlink" title="8.多项式对数函数"></a>8.多项式对数函数</h2><p>对于n次多项式$A$我们需要求出n次多项式$B$满足$B=\ln(A)$</p>
+<p>两边同时求导</p>
+<p>$B’=\frac{A’}{A}$</p>
+<p>所以把$A$的导和逆乘起来然后积分回去就可以了。。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">ln</span><span class="params">(Poly a)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> len = a.size();</span><br><span class="line">  a = inte(mul(deri(a), inv(a)));</span><br><span class="line">  a.resize(len);</span><br><span class="line">  <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="9-多项式指数函数"><a href="#9-多项式指数函数" class="headerlink" title="9.多项式指数函数"></a>9.多项式指数函数</h2><p>对于n次多项式$A$我们需要求出来n次多项式$B$满足$B=e^A$</p>
+<p>所以$\ln(B)=A $</p>
+<p>然后我们构造一个函数$F(B)=\ln(B)-A$</p>
+<p>我们要求函数$F(A)=0$的时候的解</p>
+<p>根据泰勒展开和牛顿迭代：</p>
+<p>$f(x)=f(x_0)+f’(x_0)(x-x_0)$</p>
+<p>我们可以得到迭代公式：$x=x_0-\frac{f(x_0)}{f’(x_0)}$</p>
+<p>对应到求exp上面来：$B=B_0-\frac{F(B_0)}{F’(B_0)}$</p>
+<p>展开得到：$B=B_0-\frac{\ln(B_0)-A}{\frac{1}{B_0}}=B_0(1-\ln(B_0)+A)$</p>
+<p>然后就可以根据上面的这个式子进行倍增，因为每一次计算长度会变成原来的两倍</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">exp</span><span class="params">(Poly a, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">1</span>) <span class="keyword">return</span> Poly(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">  Poly x = <span class="built_in">exp</span>(a, (n + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>), y;</span><br><span class="line">  x.resize(n);</span><br><span class="line">  y = ln(x);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    y[i] = sub(a[i], y[i]);</span><br><span class="line">  y[<span class="number">0</span>]++;</span><br><span class="line">  x = mul(x, y);</span><br><span class="line">  x.resize(n);</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Poly <span class="title">exp</span><span class="params">(Poly a)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">exp</span>(a, a.size());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="10-多项式开根"><a href="#10-多项式开根" class="headerlink" title="10.多项式开根"></a>10.多项式开根</h2><p>给定n次多项式$A$，求$B$满足$B^2=A(\mod x^{n+1})$</p>
+<p>和求exp的思路比较类似，同样用到了牛顿迭代法</p>
+<p>构造函数$F(B)=B^2-A$，求$F(B)=0$的解</p>
+<p>带入迭代公式：$x=x_0-\frac{f(x_0)}{f’(x_0)}$</p>
+<p>得到$B=B_0-\frac{B_0^2-A}{2B_0}=\frac{B_0^2+A}{2B_0}=\frac{1}{2}\ast (B_0+\frac{A}{B_0})$</p>
+<p>依旧是倍增进行求解</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Poly <span class="title">sqrt</span><span class="params">(Poly a, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">1</span>) <span class="keyword">return</span> Poly(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">  Poly x = <span class="built_in">sqrt</span>(a, (n + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>), y;</span><br><span class="line">  x.resize(n);</span><br><span class="line">  y.resize(n);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    y[i] = a[i];</span><br><span class="line">  x = add(mul(inv(x), y), x);</span><br><span class="line">  <span class="keyword">int</span> inv2 = fast_pow(<span class="number">2</span>, Mod - <span class="number">2</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    x[i] = mul(x[i], inv2);</span><br><span class="line">  x.resize(n);</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Poly <span class="title">sqrt</span><span class="params">(Poly a)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">sqrt</span>(a, a.size());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多项式/" rel="tag"># 多项式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blogs/莫比乌斯反演和杜教筛/" rel="next" title="莫比乌斯反演和杜教筛">
+                <i class="fa fa-chevron-left"></i> 莫比乌斯反演和杜教筛
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blogs/递归式的一般求解方法/" rel="prev" title="递归式的一般求解方法">
+                递归式的一般求解方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/o_id.jpg" alt="dream_maker">
+            
+              <p class="site-author-name" itemprop="name">dream_maker</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/dream-maker-yk/dream-maker-yk.github.io" title="GitHub &rarr; https://github.com/dream-maker-yk/dream-maker-yk.github.io"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:2567348204@qq.com" title="E-Mail &rarr; mailto:2567348204@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.cnblogs.com/dream-maker-yk/" title="cnblogs &rarr; https://www.cnblogs.com/dream-maker-yk/" rel="noopener" target="_blank"><i class="fa fa-fw fa-bandcamp"></i>cnblogs</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/Dream_maker_yk" title="csdn &rarr; https://blog.csdn.net/Dream_maker_yk" rel="noopener" target="_blank"><i class="fa fa-fw fa-bookmark"></i>csdn</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/yyf0309" title="https://www.cnblogs.com/yyf0309" rel="noopener" target="_blank">yyf</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/qq_35923186" title="https://blog.csdn.net/qq_35923186" rel="noopener" target="_blank">wyp</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://buzhibujue.cf/" title="https://buzhibujue.cf/" rel="noopener" target="_blank">lb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://me.csdn.net/john_zyj" title="https://me.csdn.net/john_zyj" rel="noopener" target="_blank">zyj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://spacevortex.cf/" title="http://spacevortex.cf/" rel="noopener" target="_blank">yxy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://me.csdn.net/qq_42834308" title="https://me.csdn.net/qq_42834308" rel="noopener" target="_blank">hjk</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/sjkmost" title="https://www.cnblogs.com/sjkmost" rel="noopener" target="_blank">trz</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dangxingyu.com/" title="https://dangxingyu.com/" rel="noopener" target="_blank">dxy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/aziint" title="https://www.cnblogs.com/aziint" rel="noopener" target="_blank">azi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/dreaming__ldx" title="https://blog.csdn.net/dreaming__ldx" rel="noopener" target="_blank">ldx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#多项式运算"><span class="nav-number">1.</span> <span class="nav-text">多项式运算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-思想"><span class="nav-number">1.1.</span> <span class="nav-text">0.思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-多项式加法"><span class="nav-number">1.2.</span> <span class="nav-text">1.多项式加法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-多项式减法"><span class="nav-number">1.3.</span> <span class="nav-text">2.多项式减法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-多项式乘法"><span class="nav-number">1.4.</span> <span class="nav-text">3.多项式乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-多项式求逆"><span class="nav-number">1.5.</span> <span class="nav-text">4.多项式求逆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-多项式除法"><span class="nav-number">1.6.</span> <span class="nav-text">5.多项式除法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-多项式求导"><span class="nav-number">1.7.</span> <span class="nav-text">6.多项式求导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-多项式积分"><span class="nav-number">1.8.</span> <span class="nav-text">7.多项式积分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-多项式对数函数"><span class="nav-number">1.9.</span> <span class="nav-text">8.多项式对数函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-多项式指数函数"><span class="nav-number">1.10.</span> <span class="nav-text">9.多项式指数函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-多项式开根"><span class="nav-number">1.11.</span> <span class="nav-text">10.多项式开根</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dream_maker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

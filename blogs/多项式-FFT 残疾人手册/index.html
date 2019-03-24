@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/o_id.jpg?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/o_id.jpg?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/o_id.jpg?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/o_id.jpg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="FFT残疾人手册0.简介FFT/NTT可以把本来复杂度是$\mathcal O(n^2)$的多项式乘法优化成$\mathcal O(n\log n)$的复杂度 在比较高等级的比赛中会用吧 在电脑上存一个板子也挺方便的 1.点值表示法一个$n$次多项式  A(x)=\sum_{i=0}^{n-1}a_ix^i的点值表示法为  其实就是把$x_0,x_1,…,x_{n-1}$代入$A(x)$中得到的$">
+<meta name="keywords" content="多项式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FFT残疾人手册">
+<meta property="og:url" content="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/多项式-FFT 残疾人手册/index.html">
+<meta property="og:site_name" content="Dream_maker&#39;s blog">
+<meta property="og:description" content="FFT残疾人手册0.简介FFT/NTT可以把本来复杂度是$\mathcal O(n^2)$的多项式乘法优化成$\mathcal O(n\log n)$的复杂度 在比较高等级的比赛中会用吧 在电脑上存一个板子也挺方便的 1.点值表示法一个$n$次多项式  A(x)=\sum_{i=0}^{n-1}a_ix^i的点值表示法为  其实就是把$x_0,x_1,…,x_{n-1}$代入$A(x)$中得到的$">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-01-08T07:27:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FFT残疾人手册">
+<meta name="twitter:description" content="FFT残疾人手册0.简介FFT/NTT可以把本来复杂度是$\mathcal O(n^2)$的多项式乘法优化成$\mathcal O(n\log n)$的复杂度 在比较高等级的比赛中会用吧 在电脑上存一个板子也挺方便的 1.点值表示法一个$n$次多项式  A(x)=\sum_{i=0}^{n-1}a_ix^i的点值表示法为  其实就是把$x_0,x_1,…,x_{n-1}$代入$A(x)$中得到的$">
+
+
+
+
+
+
+  <link rel="canonical" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/多项式-FFT 残疾人手册/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>FFT残疾人手册 | Dream_maker's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/dream-maker-yk"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dream_maker's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/多项式-FFT 残疾人手册/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dream_maker">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/o_id.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dream_maker's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">FFT残疾人手册
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-14 23:17:08" itemprop="dateCreated datePublished" datetime="2018-12-14T23:17:08+08:00">2018-12-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-01-08 15:27:04" itemprop="dateModified" datetime="2019-01-08T15:27:04+08:00">2019-01-08</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/知识点整理/" itemprop="url" rel="index"><span itemprop="name">知识点整理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="FFT残疾人手册"><a href="#FFT残疾人手册" class="headerlink" title="FFT残疾人手册"></a>FFT残疾人手册</h1><h2 id="0-简介"><a href="#0-简介" class="headerlink" title="0.简介"></a>0.简介</h2><p>FFT/NTT可以把本来复杂度是$\mathcal O(n^2)$的多项式乘法优化成$\mathcal O(n\log n)$的复杂度</p>
+<p>在比较高等级的比赛中会用吧</p>
+<p>在电脑上存一个板子也挺方便的</p>
+<h2 id="1-点值表示法"><a href="#1-点值表示法" class="headerlink" title="1.点值表示法"></a>1.点值表示法</h2><p>一个$n$次多项式</p>
+<script type="math/tex; mode=display">
+A(x)=\sum_{i=0}^{n-1}a_ix^i</script><p>的点值表示法为</p>
+<script type="math/tex; mode=display">
+<(x_0,y_0),(x_1,y_1),...,(x_{n-1},y_{n-1})></script><p>其实就是把$x_0,x_1,…,x_{n-1}$代入$A(x)$中得到的$y_0,y_1,…,y_{n-1}$</p>
+<p>一个大小为$n$点值表示法可以唯一确定一个$n$次多项式</p>
+<p>因为点值表示法实际上就是n个方程</p>
+<script type="math/tex; mode=display">
+A(x_0)=y_0
+\\
+A(x_1)=y_1
+\\
+...
+\\
+A(x_{n-1})=y_{n-1}</script><p>这样是可以唯一确定系数集合$a_0,a_1,…,a_{n-1}$的</p>
+<h2 id="2-算法的主要思想"><a href="#2-算法的主要思想" class="headerlink" title="2.算法的主要思想"></a>2.算法的主要思想</h2><p>我们把多项式$A(x),B(x)$在$x_0,x_1,…,x_{2n-2}$处的点值分别求出来，得到</p>
+<script type="math/tex; mode=display">
+<(x_0,A_0),(x_1,A_1),...,(x_{2n-2},A_{2n-2})>
+\\
+<(x_0,B_0),(x_1,B_1),...,(x_{2n-2},B_{2n-2})></script><p>把这些点值乘起来变成</p>
+<script type="math/tex; mode=display">
+<(x_0,A_0*B_0),(x_1,A_1*B_1),...,(x_{2n-2},A_{2n-2}*B_{2n-2})></script><p>就可以还原成多项式$A(x)*B(x)$</p>
+<h2 id="3-前置知识：单位根"><a href="#3-前置知识：单位根" class="headerlink" title="3.前置知识：单位根"></a>3.前置知识：单位根</h2><p>给没有复数基础知识的OIer普及一下：$i=\sqrt{-1}$，是一个常数</p>
+<p>然后形如$cos(\theta)+i\cdot sin(\theta)$的复数有一个很好的性质</p>
+<p>$(cos(\theta)+i\cdot sin(\theta))^k=cos(k\theta)+i\cdot sin(k\theta)$</p>
+<p>这个东西可以用数学归纳法暴力展开证明</p>
+<p>n次单位根是形如$cos(\frac{2\pi k}{n})+i\cdot sin(\frac{2\pi k}{n})$的复数</p>
+<p>我们记$\omega_{n}=cos(\frac{2\pi}{n})+i\cdot sin(\frac{2\pi}{n})$</p>
+<p>然后有$\omega_n^k=cos(\frac{2\pi k}{n})+i\cdot sin(\frac{2\pi k}{n})$</p>
+<p>所以说n次单位根其实就是把单位元分成了n等份</p>
+<p>根据这个性质很容易得到</p>
+<script type="math/tex; mode=display">
+\omega_{n}^k=\omega_{\frac{n}{2}}^{\frac{k}{2}}</script><p>也就是说存在：</p>
+<script type="math/tex; mode=display">
+(\omega_n^k)^2=\omega_{\frac{n}{2}}^k</script><p>根据三角函数的周期性可以得到一个式子：</p>
+<script type="math/tex; mode=display">
+\omega_n^k=cos(\frac{2\pi ki}{n})+i\cdot sin(\frac{2\pi k}{n})=cos(\frac{2\pi(k\%n)}{n})+i\cdot sin(\frac{2\pi(k\%n)}{n})=\omega_n^{k\%n}</script><p>结合$(7)(8)$可以得到：</p>
+<script type="math/tex; mode=display">
+(\omega_n^k)^2=(\omega_n^{k+\frac{n}{2}})^2=\omega_{\frac{n}{2}}^{k}</script><p>还有一个很好的性质：</p>
+<script type="math/tex; mode=display">
+\omega_n^{\frac{n}{2}+k}=\omega_n^k \cdot \omega_n^{\frac{n}{2}}= \omega_n^k \cdot e^{\frac{2\pi i}{n}\cdot\frac{n}{2}} = \omega_n^k\cdot e^{\pi i} = - \omega_n^k</script><p>第$(9)$和$(10)$个式子都是我们要用到重要性质</p>
+<h2 id="4-DFT过程及其优化"><a href="#4-DFT过程及其优化" class="headerlink" title="4.DFT过程及其优化"></a>4.DFT过程及其优化</h2><p>DFT就是所谓的离散傅里叶变换（Discrete Fourier Transform, DFT） </p>
+<p>因为朴素的多项式转化成点值的复杂度是$n^2$的，很慢</p>
+<p>所以考虑怎么把这个东西优化下来</p>
+<p>首先DFT的优化用到了<strong>分治</strong>的思想</p>
+<p>根据第$(9)$个式子，我们来猜想一些性质</p>
+<p>多项式：</p>
+<script type="math/tex; mode=display">
+A(x)=\sum_{i=0}^{n-1}a_ix^i</script><p>把A的所有项按照x指数的奇偶性来分类变成</p>
+<script type="math/tex; mode=display">
+A(x)=(a_0x^0+a_2x^2+a_4x^4...)+(a_1x^1+a_3x^3+a_5x^5...)</script><p>令：</p>
+<script type="math/tex; mode=display">
+F(x)=a_0x^0+a_2x^1+a_4x^2...
+\\
+G(x)=a_1x^0+a_3x^1+a_5x^2...</script><p>所以有：</p>
+<script type="math/tex; mode=display">
+A(x)=F(x^2)+xG(x^2)</script><p>那么$A(x)$就变成了$F(x)$在$x^2$处的点值和$G(x)$在$x^2$处的点值和x的积之和</p>
+<p>在取x集合的时候令：</p>
+<script type="math/tex; mode=display">
+x_0=\omega_{n}^0
+\\
+x_1=\omega_{n}^1
+\\
+...
+\\
+x_{n-1}=\omega_{n}^{n-1}</script><p>就可以得到：</p>
+<script type="math/tex; mode=display">
+A(\omega_{n}^k)=F(\omega_{\frac{n}{2}}^k)+\omega_{n}^kG(\omega_{\frac{n}{2}}^k)
+\\
+A(\omega_{n}^{k+\frac{n}{2}})=F(\omega_{\frac{n}{2}}^k)-\omega_{n}^kG(\omega_{\frac{n}{2}}^k)</script><p>这样的话我们只需要计算出$F(x)$和$G(x)$的值就可以算出多项式$A(x)$的点值了</p>
+<p>而因为每次我们递归的时候都会缩小一半的计算范围，只不过需要预先把n补到2的次幂</p>
+<p>所以这样的时间复杂度是：</p>
+<script type="math/tex; mode=display">
+\mathcal T(n) = 2\mathcal T(\frac{n}{2})+\mathcal O(n) = \mathcal O(n\log n)</script><h2 id="5-IDFT过程及其优化"><a href="#5-IDFT过程及其优化" class="headerlink" title="5.IDFT过程及其优化"></a>5.IDFT过程及其优化</h2><p>我们做完了DFT，现在需要用点值还原出多项式</p>
+<p>也就是说要从这个有n个等式的线性方程组：</p>
+<script type="math/tex; mode=display">
+\begin{equation*} \left\{ \begin{array}{ccccccccc} a_0(\omega_n^0)^{0}&+&\cdots&+&a_{n-2}(\omega_n^0)^{n-2}&+&+a_{n-1}(\omega_n^0)^{n-1}&=&A(\omega_n^0) \\ a_0(\omega_n^1)^{0}&+&\cdots&+&a_{n-2}(\omega_n^1)^{n-2}&+&+a_{n-1}(\omega_n^1)^{n-1}&=&A(\omega_n^1) \\ \vdots & & \vdots & &\vdots& & \vdots & & \vdots\\ a_0(\omega_n^{n-1})^{0}&+&\cdots&+&a_{n-2}(\omega_n^{n-1})^{n-2}&+&+a_{n-1}(\omega_n^{n-1})^{n-1}&=&A(\omega_n^{n-1}) \end{array} \right. \end{equation*}</script><p>解出$a_0,a_1,…a_{n-1}$的值。</p>
+<p>我们把上面的线性方程组写成矩阵形式，发现是：</p>
+<script type="math/tex; mode=display">
+\begin{equation} \label{IDFT-equation} \begin{bmatrix} (\omega_n^0)^0 & (\omega_n^0)^1 & \cdots & (\omega_n^0)^{n-1} \\ (\omega_n^1)^0 & (\omega_n^1)^1 & \cdots & (\omega_n^1)^{n-1} \\ \vdots & \vdots & \ddots & \vdots \\ (\omega_n^{n-1})^0 & (\omega_n^{n-1})^1 & \cdots & (\omega_n^{n-1})^{n-1} \end{bmatrix} \begin{bmatrix} a_0 \\ a_1 \\ \vdots \\ a_{n-1} \end{bmatrix} = \begin{bmatrix} A(\omega_n^0) \\ A(\omega_n^1) \\ \vdots \\ A(\omega_n^{n-1}) \end{bmatrix} \end{equation}</script><p>也就是说我们要求出矩阵</p>
+<script type="math/tex; mode=display">
+P=\begin{bmatrix} (\omega_n^0)^0 & (\omega_n^0)^1 & \cdots & (\omega_n^0)^{n-1} \\ (\omega_n^1)^0 & (\omega_n^1)^1 & \cdots & (\omega_n^1)^{n-1} \\ \vdots & \vdots & \ddots & \vdots \\ (\omega_n^{n-1})^0 & (\omega_n^{n-1})^1 & \cdots & (\omega_n^{n-1})^{n-1} \end{bmatrix}</script><p>的逆矩阵$P’$。</p>
+<p>在这里直接给出逆矩阵$P’$并证明一定成立</p>
+<script type="math/tex; mode=display">
+P'=\frac{1}{n}\left[\begin{matrix} (\omega_n^{-0})^0  & (\omega_n^{-0})^1    & \cdots & (\omega_n^{-0})^{n-1} \\(\omega_n^{-1})^0 & (\omega_n^{-1})^1 & \cdots & (\omega_n^{-1})^{n-1} \\ \vdots & \vdots & \ddots & \vdots \\ (\omega_n^{-(n-1)})^0 &(\omega_n^{-(n-1)})^1 & \cdots & (\omega_n^{-(n-1)})^{n-1}  \\\end{matrix}\right]</script><p>那么对于矩阵$Q=PP’$，有$Q_{i,j}=\sum_{k=0}^{n-1}P_{i,k}\cdot P’_{k,j}$</p>
+<p>即$Q_{i,j}=\sum_{k=0}^{n-1}\frac{1}{n}\omega_n^{-ik}\cdot \omega_n^{kj}=\frac{1}{n}\sum_{k=0}^{n-1}(\omega_n^{j-i})^k $</p>
+<ol>
+<li><p>$i\not=j$：$Q_{i,j}=\frac{1}{n}\sum_{k=0}^{n-1}(\omega_n^{i-j})^k=\frac{1}{n}\cdot \frac{(\omega_n^{i-j})^n-1}{\omega_n^{i-j}-1}$</p>
+<p>因为公式$(8)$，可以得到$(\omega_n^{i-j})^n=1$，所以$Q_{i,j}=0$</p>
+</li>
+<li><p>$i=j$：$Q_{i,j}=1$</p>
+</li>
+</ol>
+<p>所以$P​$和$P’​$互为逆矩阵</p>
+<p>也就是说现在要做的就是求出$P’$和点值矩阵的乘积，即：</p>
+<script type="math/tex; mode=display">
+\frac{1}{n}\left[\begin{matrix} (\omega_n^{-0})^0  & (\omega_n^{-0})^1    & \cdots & (\omega_n^{-0})^{n-1} \\(\omega_n^{-1})^0 & (\omega_n^{-1})^1 & \cdots & (\omega_n^{-1})^{n-1} \\ \vdots & \vdots & \ddots & \vdots \\ (\omega_n^{-(n-1)})^0 &(\omega_n^{-(n-1)})^1 & \cdots & (\omega_n^{-(n-1)})^{n-1}  \\\end{matrix}\right]  \begin{bmatrix} A(\omega_n^0) \\ A(\omega_n^1) \\ \vdots \\ A(\omega_n^{n-1}) \end{bmatrix}</script><p>再来观察一下原来的DFT过程中我们做的事，就是求出了</p>
+<script type="math/tex; mode=display">
+\left[\begin{matrix} (\omega_n^{0})^0  & (\omega_n^{0})^1    & \cdots & (\omega_n^{0})^{n-1} \\(\omega_n^{1})^0 & (\omega_n^{1})^1 & \cdots & (\omega_n^{1})^{n-1} \\ \vdots & \vdots & \ddots & \vdots \\ (\omega_n^{(n-1)})^0 &(\omega_n^{(n-1)})^1 & \cdots & (\omega_n^{(n-1)})^{n-1}  \\\end{matrix}\right]  \begin{bmatrix} a(\omega_n^0) \\ a(\omega_n^1) \\ \vdots \\ a(\omega_n^{n-1}) \end{bmatrix}</script><p>那这个时候我们只需要把$A(\omega_n^0) ,A(\omega_n^1) ,\dots,A(\omega_n^{n-1})$当作点值，并且把DFT过程中的$\omega_n^{k}$替换成$\omega_n^{-k}$就可以了</p>
+<h2 id="6-FFT的递归实现"><a href="#6-FFT的递归实现" class="headerlink" title="6.FFT的递归实现"></a>6.FFT的递归实现</h2><p>dd只要理解了最初的迭代过程应该就问题不大了</p>
+<p>就是简单的模拟出分治过程</p>
+<p>omiga数组最好是可以预处理出来，但是这样的实现方式依旧有很大的常数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fft</span><span class="params">(<span class="keyword">int</span> n, Complex *p, <span class="keyword">int</span> pos, <span class="keyword">int</span> step, Complex *omg)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(n == <span class="number">1</span>) <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">int</span> m = n &gt;&gt; <span class="number">1</span>;</span><br><span class="line">  fft(m, p, pos, step &lt;&lt; <span class="number">1</span>, omg);</span><br><span class="line">  fft(m, p, pos + step, step &lt;&lt; <span class="number">1</span>, omg);</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; m; k++) &#123;</span><br><span class="line">    <span class="keyword">int</span> cur = <span class="number">2</span> * step * k;</span><br><span class="line">    tmp[k] = p[cur + pos] + omg[k * step] * p[cur + pos + step];</span><br><span class="line">    tmp[k + m] = p[cur + pos] - omg[k * step] * p[cur + pos + step];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) p[i * step + pos] = tmp[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7-FFT的迭代实现"><a href="#7-FFT的迭代实现" class="headerlink" title="7.FFT的迭代实现"></a>7.FFT的迭代实现</h2><p>我们考虑每一次的分组递归</p>
+<p>第一次显然是按照最后一个二进制位的奇偶性来分组的</p>
+<p>进入下一层迭代后就发现变成了一个$\frac{n}{2}$次多项式，可以看做所有的指数都除以了2，参考$(14)$</p>
+<p>所以最后一位就没有意义了，下一次排序就是按照倒数第二位的奇偶性来进行分组的</p>
+<p>发现本质就是把二进制反转进行交换，很奇妙的</p>
+<p>可以这样预处理：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">  rev[i] = (rev[i &gt;&gt; <span class="number">1</span>] &gt;&gt; <span class="number">1</span>) | ((i &amp; <span class="number">1</span>) &lt;&lt; (lim - <span class="number">1</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以就可以用迭代来进行运算啦</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">transform</span><span class="params">(Complex f[N], Complex w[N])</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; p; i++) <span class="keyword">if</span> (i &lt; rev[i]) swap(f[i], f[rev[i]]);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> len = <span class="number">1</span>; len &lt; p; len &lt;&lt;= <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">int</span> step = (len &lt;&lt; <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (Complex *cur = f; cur != f + p; cur += step) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        Complex t = w[p / step * i] * cur[i + len];</span><br><span class="line">        cur[i + len] = cur[i] - t;</span><br><span class="line">        cur[i] += t; </span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="8-板子"><a href="#8-板子" class="headerlink" title="8.板子"></a>8.板子</h2><p>总的板子</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> PI = <span class="built_in">acos</span>(<span class="number">-1.0</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">262144</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Complex</span> &#123;</span></span><br><span class="line">	<span class="keyword">double</span> x, y;</span><br><span class="line">	</span><br><span class="line">  Complex() &#123;&#125;</span><br><span class="line">	</span><br><span class="line">  Complex(<span class="keyword">double</span> x, <span class="keyword">double</span> y): x(x), y(y) &#123;&#125;</span><br><span class="line">	</span><br><span class="line">  Complex <span class="keyword">operator</span> + (<span class="keyword">const</span> Complex &amp; a) <span class="keyword">const</span> &#123; </span><br><span class="line">    <span class="keyword">return</span> Complex(x + a.x, y + a.y);</span><br><span class="line">  &#125;</span><br><span class="line">	</span><br><span class="line">  <span class="keyword">void</span> <span class="keyword">operator</span> += (<span class="keyword">const</span> Complex &amp; a) &#123;</span><br><span class="line">    *<span class="keyword">this</span> = *<span class="keyword">this</span> + a;</span><br><span class="line">  &#125;</span><br><span class="line">	</span><br><span class="line">  Complex <span class="keyword">operator</span> - (<span class="keyword">const</span> Complex &amp; a) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> Complex(x - a.x, y - a.y);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">void</span> <span class="keyword">operator</span> -= (<span class="keyword">const</span> Complex &amp; a) &#123;</span><br><span class="line">    *<span class="keyword">this</span> = *<span class="keyword">this</span> - a;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  Complex <span class="keyword">operator</span> * (<span class="keyword">const</span> Complex &amp; a) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> Complex(x * a.x - y * a.y, x * a.y + y * a.x);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">void</span> <span class="keyword">operator</span> *= (<span class="keyword">const</span> Complex &amp; a) &#123;</span><br><span class="line">    *<span class="keyword">this</span> = *<span class="keyword">this</span> * a;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  Complex <span class="keyword">operator</span> / (<span class="keyword">const</span> Complex &amp; b) <span class="keyword">const</span> &#123;</span><br><span class="line">    Complex c = b.conj();</span><br><span class="line">    <span class="keyword">return</span> (*<span class="keyword">this</span>) * c / ((b * c).x);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">void</span> <span class="keyword">operator</span> /= (<span class="keyword">const</span> Complex &amp; a) &#123;</span><br><span class="line">    *<span class="keyword">this</span> = *<span class="keyword">this</span> / a;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">	Complex <span class="keyword">operator</span> * (<span class="keyword">const</span> <span class="keyword">double</span> &amp; a) <span class="keyword">const</span> &#123; </span><br><span class="line">    <span class="keyword">return</span> Complex(x * a, y * a);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">void</span> <span class="keyword">operator</span> *= (<span class="keyword">const</span> <span class="keyword">double</span> &amp; a) &#123;</span><br><span class="line">    *<span class="keyword">this</span> = *<span class="keyword">this</span> * a;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">	Complex <span class="keyword">operator</span> / (<span class="keyword">const</span> <span class="keyword">double</span> &amp; a) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> Complex(x / a, y / a);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">void</span> <span class="keyword">operator</span> /= (<span class="keyword">const</span> <span class="keyword">double</span> &amp; a) &#123;</span><br><span class="line">    *<span class="keyword">this</span> = *<span class="keyword">this</span> / a;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">	<span class="function">Complex <span class="title">conj</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Complex(x, -y);</span><br><span class="line">  &#125;</span><br><span class="line">&#125; ;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fft</span> &#123;</span></span><br><span class="line">  Complex a[N], b[N], c[N], omg[N], inv[N];</span><br><span class="line">  <span class="keyword">int</span> n, m, p, lim, rev[N];</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">input</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="built_in">scanf</span>(<span class="string">"%d %d"</span>, &amp;n, &amp;m);</span><br><span class="line">    ++n, ++m;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">      <span class="keyword">int</span> v; <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;v);</span><br><span class="line">      a[i] = Complex(v, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">      <span class="keyword">int</span> v; <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;v);</span><br><span class="line">      b[i] = Complex(v, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n + m - <span class="number">1</span>; i++) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"%d "</span>, (<span class="keyword">int</span>)(c[i].x + <span class="number">0.5</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (p = <span class="number">1</span>; p &lt; n + m - <span class="number">1</span>; p &lt;&lt;= <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (; (<span class="number">1</span> &lt;&lt; lim) &lt; p; ++lim);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; p; i++) &#123;</span><br><span class="line">      omg[i] = Complex(<span class="built_in">cos</span>(<span class="number">2.0</span> * PI * i / p), <span class="built_in">sin</span>(<span class="number">2.0</span> * PI * i / p));</span><br><span class="line">      inv[i] = omg[i].conj();</span><br><span class="line">      rev[i] = (rev[i &gt;&gt; <span class="number">1</span>] &gt;&gt; <span class="number">1</span>) | ((i &amp; <span class="number">1</span>) &lt;&lt; (lim - <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">transform</span><span class="params">(Complex f[N], Complex w[N])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; p; i++) <span class="keyword">if</span> (i &lt; rev[i]) swap(f[i], f[rev[i]]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> len = <span class="number">1</span>; len &lt; p; len &lt;&lt;= <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">int</span> step = (len &lt;&lt; <span class="number">1</span>);</span><br><span class="line">      <span class="keyword">for</span> (Complex *cur = f; cur != f + p; cur += step) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">          Complex t = w[p / step * i] * cur[i + len];</span><br><span class="line">          cur[i + len] = cur[i] - t;</span><br><span class="line">          cur[i] += t; </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    input();</span><br><span class="line">    init();</span><br><span class="line">    transform(a, omg);</span><br><span class="line">    transform(b, omg);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; p; i++) c[i] = a[i] * b[i];</span><br><span class="line">    transform(c, inv);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; p; i++) c[i] = Complex(c[i].x / p, <span class="number">0.0</span>);</span><br><span class="line">    output();</span><br><span class="line">  &#125;</span><br><span class="line">&#125; fft;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  fft.solve();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多项式/" rel="tag"># 多项式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blogs/DP优化/" rel="next" title="DP优化">
+                <i class="fa fa-chevron-left"></i> DP优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blogs/多项式-NTT 残疾人手册/" rel="prev" title="NTT残疾人手册">
+                NTT残疾人手册 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/o_id.jpg" alt="dream_maker">
+            
+              <p class="site-author-name" itemprop="name">dream_maker</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/dream-maker-yk/dream-maker-yk.github.io" title="GitHub &rarr; https://github.com/dream-maker-yk/dream-maker-yk.github.io"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:2567348204@qq.com" title="E-Mail &rarr; mailto:2567348204@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.cnblogs.com/dream-maker-yk/" title="cnblogs &rarr; https://www.cnblogs.com/dream-maker-yk/" rel="noopener" target="_blank"><i class="fa fa-fw fa-bandcamp"></i>cnblogs</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/Dream_maker_yk" title="csdn &rarr; https://blog.csdn.net/Dream_maker_yk" rel="noopener" target="_blank"><i class="fa fa-fw fa-bookmark"></i>csdn</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/yyf0309" title="https://www.cnblogs.com/yyf0309" rel="noopener" target="_blank">yyf</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/qq_35923186" title="https://blog.csdn.net/qq_35923186" rel="noopener" target="_blank">wyp</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://buzhibujue.cf/" title="https://buzhibujue.cf/" rel="noopener" target="_blank">lb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://me.csdn.net/john_zyj" title="https://me.csdn.net/john_zyj" rel="noopener" target="_blank">zyj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://spacevortex.cf/" title="http://spacevortex.cf/" rel="noopener" target="_blank">yxy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://me.csdn.net/qq_42834308" title="https://me.csdn.net/qq_42834308" rel="noopener" target="_blank">hjk</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/sjkmost" title="https://www.cnblogs.com/sjkmost" rel="noopener" target="_blank">trz</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dangxingyu.com/" title="https://dangxingyu.com/" rel="noopener" target="_blank">dxy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.cnblogs.com/aziint" title="https://www.cnblogs.com/aziint" rel="noopener" target="_blank">azi</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/dreaming__ldx" title="https://blog.csdn.net/dreaming__ldx" rel="noopener" target="_blank">ldx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#FFT残疾人手册"><span class="nav-number">1.</span> <span class="nav-text">FFT残疾人手册</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-简介"><span class="nav-number">1.1.</span> <span class="nav-text">0.简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-点值表示法"><span class="nav-number">1.2.</span> <span class="nav-text">1.点值表示法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-算法的主要思想"><span class="nav-number">1.3.</span> <span class="nav-text">2.算法的主要思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-前置知识：单位根"><span class="nav-number">1.4.</span> <span class="nav-text">3.前置知识：单位根</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-DFT过程及其优化"><span class="nav-number">1.5.</span> <span class="nav-text">4.DFT过程及其优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-IDFT过程及其优化"><span class="nav-number">1.6.</span> <span class="nav-text">5.IDFT过程及其优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-FFT的递归实现"><span class="nav-number">1.7.</span> <span class="nav-text">6.FFT的递归实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-FFT的迭代实现"><span class="nav-number">1.8.</span> <span class="nav-text">7.FFT的迭代实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-板子"><span class="nav-number">1.9.</span> <span class="nav-text">8.板子</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dream_maker</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
