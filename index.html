@@ -379,6 +379,184 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/可持久化点分树/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dream_maker">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/o_id.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dream_maker's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/blogs/可持久化点分树/" class="post-title-link" itemprop="https://github.com/dream-maker-yk/dream-maker-yk.github.io/index.html">可持久化点分树</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-27 11:11:11 / Modified: 11:08:24" itemprop="dateCreated datePublished" datetime="2019-03-27T11:11:11+08:00">2019-03-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/知识点整理/" itemprop="url" rel="index"><span itemprop="name">知识点整理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="可持久化点分树"><a href="#可持久化点分树" class="headerlink" title="可持久化点分树"></a>可持久化点分树</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在一些神奇的问题中，光是维护点分树（动态点分治）是完全没有办法解决问题的，例如<a href="http://codeforces.com/contest/757/problem/G" target="_blank" rel="noopener">这道题</a>，我们发现查询的区间是和树的形态无关的，这样的问题就不能单纯维护点分树，需要对点分树进行可持久化</p>
+<h2 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h2><h3 id="前置技能1-0-点分治"><a href="#前置技能1-0-点分治" class="headerlink" title="前置技能1.0 点分治"></a>前置技能1.0 点分治</h3><p>关于这个可以去看<a href="https://dream-maker-yk.github.io/blogs/%E7%82%B9%E5%88%86%E6%B2%BB/" target="_blank" rel="noopener">我上古时期的blog</a>，如果这个都看不懂就直接退群吧。。。。</p>
+<h3 id="前置技能2-0-点分树（动态点分治）"><a href="#前置技能2-0-点分树（动态点分治）" class="headerlink" title="前置技能2.0 点分树（动态点分治）"></a>前置技能2.0 点分树（动态点分治）</h3><p>听起来在点分治上加上了动态两个字，其实就是把点分治中分治中心用树型关系表示出来</p>
+<p>在统计到一个点的信息的时候，我们就直接从这个点出发，往点分树父亲节点上跳，比如我们需要查询到u节点距离小于等k的点的个数，我们就先看当前分治中心u管辖区域内有多少个点和他的距离小于等于k，然后我们跳到prt[u]，查询在prt[u]的子树里面有多少个距离小于等于k - dis(prt[u], u)的节点，但是我们发现u的管辖区域内的点存在重复计算，所以我们需要把这一部分用相同的方法容斥掉，就可以计算答案了</p>
+<p>修改和查询十分类似，不赘讲（江老著名梗）了</p>
+<h3 id="进入正题"><a href="#进入正题" class="headerlink" title="进入正题"></a>进入正题</h3><p>可持久化点分树，就拿上面哪个cf题做例子吧，用问题作为切入点可能会好一些</p>
+<p>首先我们可以发现这道题的查询是和树无关的，如果只有单点的查询是很快可以在点分树上处理出来的</p>
+<p>并且我们知道查询是可以转化成前缀和查询的，于是就有了维护可持久化点分树的思路</p>
+<p>因为平常的点分我们是从下到上更新，这次需要变成从上到下的插入，并且在点分树上添加出来一条新的链，所以在考虑继承上一个点分树的状态的时候，我们需要在插入的时候继承不改变的子树的信息，因此我们需要先将原来的树进行三度化处理，这样每个分治重心的儿子最多只有三个，就可以处理了</p>
+<p>三度化的技巧主要在于理解左兄弟右儿子的思路，把所有的兄弟用长度为0的边串起来，这样在新的树上的距离就是在原树上的距离了，并且因为串两个兄弟只需要1个点，所以新的树的总点数也是$O(n)$级别的，不影响复杂度</p>
+<p>具体代码实现长成这样：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rebuild</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> last = <span class="number">0</span>, tmp = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> cur : edge[u]) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = cur.first, w = cur.second;</span><br><span class="line">    <span class="keyword">if</span> (v == fa) <span class="keyword">continue</span>;</span><br><span class="line">    ++tmp;</span><br><span class="line">    <span class="keyword">if</span> (tmp == <span class="number">1</span>) &#123;</span><br><span class="line">      addedge(u, v, w);</span><br><span class="line">      addedge(v, u, w);</span><br><span class="line">      last = u;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (tmp == ((<span class="keyword">signed</span>) edge[u].size()) - (u != <span class="number">1</span>)) &#123;</span><br><span class="line">      addedge(last, v, w);</span><br><span class="line">      addedge(v, last, w);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      m++;</span><br><span class="line">      addedge(last, m, <span class="number">0</span>);</span><br><span class="line">      addedge(m, last, <span class="number">0</span>);</span><br><span class="line">      last = m;</span><br><span class="line">      addedge(m, v, w);</span><br><span class="line">      addedge(v, m, w);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> cur : edge[u]) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = cur.first;</span><br><span class="line">    <span class="keyword">if</span> (v == fa) <span class="keyword">continue</span>;</span><br><span class="line">    rebuild(v, u);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中edge是原树的边，addedge是新树的边<br>然后因为我们需要在点分树上更新一直到节点u（当前的更新节点）<br>所以我们需要记录一下在点分树上u的每个祖先v是prt[v]的哪一个儿子<br>这个可以在第一次点分树预处理出来</p>
+<p>然后为了保证复杂度（不要多一个log）<br>最好用$O(n\log n)$预处理，$O(1)$查询的LCA<br>就是在欧拉序上进行处理</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> LCA &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> dep[N], st[N &lt;&lt; <span class="number">1</span>][LOG], dfn[N], Log[N &lt;&lt; <span class="number">1</span>], ind = <span class="number">0</span>;</span><br><span class="line">ll dis[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  st[dfn[u] = ++ind][<span class="number">0</span>] = u;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].nxt) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (v == fa) <span class="keyword">continue</span>;</span><br><span class="line">    dep[v] = dep[u] + <span class="number">1</span>;</span><br><span class="line">    dis[v] = dis[u] + E[i].w;</span><br><span class="line">    dfs(v, u);</span><br><span class="line">    st[++ind][<span class="number">0</span>] = u;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">checkmin</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> dep[x] &lt; dep[y] ? x : y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ST</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  dfs(<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= ind; i++) &#123;</span><br><span class="line">    Log[i] = Log[i &gt;&gt; <span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; LOG; j++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i + (<span class="number">1</span> &lt;&lt; j) - <span class="number">1</span> &lt;= ind; i++) &#123;</span><br><span class="line">      st[i][j] = checkmin(st[i][j - <span class="number">1</span>], st[i + (<span class="number">1</span> &lt;&lt; (j - <span class="number">1</span>))][j - <span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lca</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  x = dfn[x], y = dfn[y];</span><br><span class="line">  <span class="keyword">if</span> (x &gt; y) swap(x, y);</span><br><span class="line">  <span class="keyword">int</span> k = Log[y - x + <span class="number">1</span>];</span><br><span class="line">  <span class="keyword">return</span> checkmin(st[x][k], st[y - (<span class="number">1</span> &lt;&lt; k) + <span class="number">1</span>][k]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">getdis</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> dis[x] + dis[y] - dis[lca(x, y)] * <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我们考虑普通的点分树在维护什么东西<br>首先是用来记录信息的值和用来进行容斥的值，因为这道题只需要记录距离，所以我们用两个值来表示就可以了，如果需要更复杂的维护就需要用到高级的数据结构了</p>
+<p>我们查询到一个点的距离和的时候首先从根往下走，假设当前节点是v，查询节点是u，那么v除了u所在子树的所有点到u的所有距离就是除了u子树所有节点到v的距离和加上除了u所有子树的大小乘上u到v的距离</p>
+<p>于是我们就可以进行容斥了</p>
+<p>点分树部分的代码是这样的：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> Tree_Devide &#123;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> ch[<span class="number">3</span>], id, siz;</span><br><span class="line">  ll sum[<span class="number">2</span>];</span><br><span class="line">&#125; s[N * LOG];</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> siz[N], F[N], dep[N], siz_all, rt, cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> root[N];</span><br><span class="line"><span class="keyword">bool</span> vis[N];</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; pre[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getroot</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  siz[u] = <span class="number">1</span>;</span><br><span class="line">  F[u] = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].nxt) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (v == fa || vis[v]) <span class="keyword">continue</span>;</span><br><span class="line">    getroot(v, u);</span><br><span class="line">    siz[u] += siz[v];</span><br><span class="line">    F[u] = max(F[u], siz[v]);</span><br><span class="line">  &#125;</span><br><span class="line">  F[u] = max(F[u], siz_all - siz[u]);</span><br><span class="line">  <span class="keyword">if</span> (F[u] &lt; F[rt]) rt = u;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">devide</span><span class="params">(<span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">  vis[u] = <span class="number">1</span>;</span><br><span class="line">  s[u].id = u;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].nxt) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (vis[v]) <span class="keyword">continue</span>;</span><br><span class="line">    F[rt = <span class="number">0</span>] = siz_all = siz[v];</span><br><span class="line">    getroot(v, <span class="number">0</span>);</span><br><span class="line">    dep[rt] = dep[u] + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j : pre[u]) &#123;</span><br><span class="line">      pre[rt].push_back(j);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (s[u].ch[j]) <span class="keyword">continue</span>;</span><br><span class="line">      s[u].ch[j] = rt;</span><br><span class="line">      pre[rt].push_back(j);</span><br><span class="line">      devide(rt);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> &amp;t, <span class="keyword">int</span> las, <span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  t = ++cnt;</span><br><span class="line">  s[t] = s[las];</span><br><span class="line">  s[t].siz++;</span><br><span class="line">  s[t].sum[<span class="number">0</span>] += getdis(s[t].id, u);</span><br><span class="line">  <span class="keyword">if</span> (fa) &#123;</span><br><span class="line">    s[t].sum[<span class="number">1</span>] += getdis(s[fa].id, u);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (s[t].id == u) <span class="keyword">return</span>;</span><br><span class="line">  insert(s[t].ch[pre[u][dep[s[t].id]]], s[las].ch[pre[u][dep[s[t].id]]], u, t);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">  ll res = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dep[u]; i++) &#123;</span><br><span class="line">    <span class="keyword">int</span> cur = s[t].ch[pre[u][i]];</span><br><span class="line">    res += (s[t].siz - s[cur].siz) * getdis(s[t].id, u) + s[t].sum[<span class="number">0</span>] - s[cur].sum[<span class="number">1</span>];</span><br><span class="line">    t = cur;</span><br><span class="line">  &#125;</span><br><span class="line">  res += s[t].sum[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  F[rt = <span class="number">0</span>] = siz_all = cnt = m;</span><br><span class="line">  getroot(<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">  root[<span class="number">0</span>] = rt;</span><br><span class="line">  devide(rt);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    insert(root[i], root[i - <span class="number">1</span>], a[i], <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后放一下cf757g的完整代码：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; pi;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">4e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> LOG = <span class="number">20</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Edge</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> v, w, nxt;</span><br><span class="line">&#125; E[N &lt;&lt; <span class="number">1</span>];</span><br><span class="line"><span class="keyword">int</span> head[N], tot = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> n, m, q, a[N];</span><br><span class="line"><span class="built_in">vector</span>&lt;pi&gt; edge[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addedge</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> w)</span> </span>&#123;</span><br><span class="line">  E[++tot] = (Edge) &#123;v, w, head[u]&#125;;</span><br><span class="line">  head[u] = tot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rebuild</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> last = <span class="number">0</span>, tmp = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> cur : edge[u]) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = cur.first, w = cur.second;</span><br><span class="line">    <span class="keyword">if</span> (v == fa) <span class="keyword">continue</span>;</span><br><span class="line">    ++tmp;</span><br><span class="line">    <span class="keyword">if</span> (tmp == <span class="number">1</span>) &#123;</span><br><span class="line">      addedge(u, v, w);</span><br><span class="line">      addedge(v, u, w);</span><br><span class="line">      last = u;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (tmp == ((<span class="keyword">signed</span>) edge[u].size()) - (u != <span class="number">1</span>)) &#123;</span><br><span class="line">      addedge(last, v, w);</span><br><span class="line">      addedge(v, last, w);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      m++;</span><br><span class="line">      addedge(last, m, <span class="number">0</span>);</span><br><span class="line">      addedge(m, last, <span class="number">0</span>);</span><br><span class="line">      last = m;</span><br><span class="line">      addedge(m, v, w);</span><br><span class="line">      addedge(v, m, w);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> cur : edge[u]) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = cur.first;</span><br><span class="line">    <span class="keyword">if</span> (v == fa) <span class="keyword">continue</span>;</span><br><span class="line">    rebuild(v, u);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> LCA &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> dep[N], st[N &lt;&lt; <span class="number">1</span>][LOG], dfn[N], Log[N &lt;&lt; <span class="number">1</span>], ind = <span class="number">0</span>;</span><br><span class="line">ll dis[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  st[dfn[u] = ++ind][<span class="number">0</span>] = u;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].nxt) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (v == fa) <span class="keyword">continue</span>;</span><br><span class="line">    dep[v] = dep[u] + <span class="number">1</span>;</span><br><span class="line">    dis[v] = dis[u] + E[i].w;</span><br><span class="line">    dfs(v, u);</span><br><span class="line">    st[++ind][<span class="number">0</span>] = u;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">checkmin</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> dep[x] &lt; dep[y] ? x : y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ST</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  dfs(<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= ind; i++) &#123;</span><br><span class="line">    Log[i] = Log[i &gt;&gt; <span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; LOG; j++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i + (<span class="number">1</span> &lt;&lt; j) - <span class="number">1</span> &lt;= ind; i++) &#123;</span><br><span class="line">      st[i][j] = checkmin(st[i][j - <span class="number">1</span>], st[i + (<span class="number">1</span> &lt;&lt; (j - <span class="number">1</span>))][j - <span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lca</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  x = dfn[x], y = dfn[y];</span><br><span class="line">  <span class="keyword">if</span> (x &gt; y) swap(x, y);</span><br><span class="line">  <span class="keyword">int</span> k = Log[y - x + <span class="number">1</span>];</span><br><span class="line">  <span class="keyword">return</span> checkmin(st[x][k], st[y - (<span class="number">1</span> &lt;&lt; k) + <span class="number">1</span>][k]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">getdis</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> dis[x] + dis[y] - dis[lca(x, y)] * <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> LCA::getdis;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> Tree_Devide &#123;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> ch[<span class="number">3</span>], id, siz;</span><br><span class="line">  ll sum[<span class="number">2</span>];</span><br><span class="line">&#125; s[N * LOG];</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> siz[N], F[N], dep[N], siz_all, rt, cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> root[N];</span><br><span class="line"><span class="keyword">bool</span> vis[N];</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; pre[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getroot</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  siz[u] = <span class="number">1</span>;</span><br><span class="line">  F[u] = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].nxt) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (v == fa || vis[v]) <span class="keyword">continue</span>;</span><br><span class="line">    getroot(v, u);</span><br><span class="line">    siz[u] += siz[v];</span><br><span class="line">    F[u] = max(F[u], siz[v]);</span><br><span class="line">  &#125;</span><br><span class="line">  F[u] = max(F[u], siz_all - siz[u]);</span><br><span class="line">  <span class="keyword">if</span> (F[u] &lt; F[rt]) rt = u;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">devide</span><span class="params">(<span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">  vis[u] = <span class="number">1</span>;</span><br><span class="line">  s[u].id = u;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].nxt) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (vis[v]) <span class="keyword">continue</span>;</span><br><span class="line">    F[rt = <span class="number">0</span>] = siz_all = siz[v];</span><br><span class="line">    getroot(v, <span class="number">0</span>);</span><br><span class="line">    dep[rt] = dep[u] + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j : pre[u]) &#123;</span><br><span class="line">      pre[rt].push_back(j);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (s[u].ch[j]) <span class="keyword">continue</span>;</span><br><span class="line">      s[u].ch[j] = rt;</span><br><span class="line">      pre[rt].push_back(j);</span><br><span class="line">      devide(rt);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> &amp;t, <span class="keyword">int</span> las, <span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  t = ++cnt;</span><br><span class="line">  s[t] = s[las];</span><br><span class="line">  s[t].siz++;</span><br><span class="line">  s[t].sum[<span class="number">0</span>] += getdis(s[t].id, u);</span><br><span class="line">  <span class="keyword">if</span> (fa) &#123;</span><br><span class="line">    s[t].sum[<span class="number">1</span>] += getdis(s[fa].id, u);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (s[t].id == u) <span class="keyword">return</span>;</span><br><span class="line">  insert(s[t].ch[pre[u][dep[s[t].id]]], s[las].ch[pre[u][dep[s[t].id]]], u, t);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="keyword">int</span> t, <span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">  ll res = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dep[u]; i++) &#123;</span><br><span class="line">    <span class="keyword">int</span> cur = s[t].ch[pre[u][i]];</span><br><span class="line">    res += (s[t].siz - s[cur].siz) * getdis(s[t].id, u) + s[t].sum[<span class="number">0</span>] - s[cur].sum[<span class="number">1</span>];</span><br><span class="line">    t = cur;</span><br><span class="line">  &#125;</span><br><span class="line">  res += s[t].sum[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  F[rt = <span class="number">0</span>] = siz_all = cnt = m;</span><br><span class="line">  getroot(<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">  root[<span class="number">0</span>] = rt;</span><br><span class="line">  devide(rt);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    insert(root[i], root[i - <span class="number">1</span>], a[i], <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> Tree_Devide::root;</span><br><span class="line"><span class="keyword">using</span> Tree_Devide::build;</span><br><span class="line"><span class="keyword">using</span> Tree_Devide::insert;</span><br><span class="line"><span class="keyword">using</span> Tree_Devide::query;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">"%d %d"</span>, &amp;n, &amp;q);</span><br><span class="line">  m = n;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;a[i]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">    <span class="keyword">int</span> u, v, w;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d %d %d"</span>, &amp;u, &amp;v, &amp;w);</span><br><span class="line">    edge[u].push_back(make_pair(v, w));</span><br><span class="line">    edge[v].push_back(make_pair(u, w));</span><br><span class="line">  &#125;</span><br><span class="line">  rebuild(<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">  LCA::ST();</span><br><span class="line">  build();</span><br><span class="line">  ll lastans = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (q--) &#123;</span><br><span class="line">    <span class="keyword">int</span> op, l, r, u;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;op);</span><br><span class="line">    <span class="keyword">if</span> (op == <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="built_in">scanf</span>(<span class="string">"%d %d %d"</span>, &amp;l, &amp;r, &amp;u);</span><br><span class="line">      l ^= lastans;</span><br><span class="line">      r ^= lastans;</span><br><span class="line">      u ^= lastans;</span><br><span class="line">      lastans = query(root[r], u) - query(root[l - <span class="number">1</span>], u);</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>, lastans);</span><br><span class="line">      lastans %= (<span class="number">1</span> &lt;&lt; <span class="number">30</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;u);</span><br><span class="line">      u ^= lastans;</span><br><span class="line">      swap(a[u], a[u + <span class="number">1</span>]);</span><br><span class="line">      insert(root[u], root[u - <span class="number">1</span>], a[u], <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/Min25/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2380,226 +2558,6 @@ Prob(E)=\frac{|E|}{|S|}</script>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/点分治/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="dream_maker">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/o_id.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Dream_maker's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/blogs/点分治/" class="post-title-link" itemprop="https://github.com/dream-maker-yk/dream-maker-yk.github.io/index.html">算法-点分治</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-12-05 23:00:31" itemprop="dateCreated datePublished" datetime="2018-12-05T23:00:31+08:00">2018-12-05</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-01-06 17:35:08" itemprop="dateModified" datetime="2019-01-06T17:35:08+08:00">2019-01-06</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/知识点整理/" itemprop="url" rel="index"><span itemprop="name">知识点整理</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><strong>解决树上路径问题</strong></p>
-<p>在解决树上路径问题时，我们会想到将树拆成几部分来提高我们的时间效率，当一棵树被分成若干子树时，我们可以用同样的方法进行处理，并不断进行下去，所以<strong>为了使每次的处理最优，我们通常要选取树的重心进行处理</strong>，选取了重心我们的下一层子树节点数会更小，时间复杂度也就更优秀。</p>
-<ul>
-<li>重心:一个点为重心，则它所连接的子树节点数最大值最小</li>
-</ul>
-<h4 id="变量定义"><a href="#变量定义" class="headerlink" title="变量定义"></a>变量定义</h4><div class="table-container">
-<table>
-<thead>
-<tr>
-<th>变量名</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>rt</td>
-<td>当前子树根节点</td>
-</tr>
-<tr>
-<td>siz_tree</td>
-<td>当前子树大小</td>
-</tr>
-<tr>
-<td>F</td>
-<td>以每个节点为根的最大子树大小</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h4 id="1-寻找重心"><a href="#1-寻找重心" class="headerlink" title="1.寻找重心"></a><strong>1.寻找重心</strong></h4><ul>
-<li>DFS出以每个点为根的最大子树大小</li>
-<li>如果当前节点为根更优，更新当前节点为根</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getroot</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  siz[u] = <span class="number">1</span>, F[u] = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].next) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (v == fa || vis[v]) <span class="keyword">continue</span>;</span><br><span class="line">    getroot(v, u);</span><br><span class="line">    siz[u] += siz[v];</span><br><span class="line">    F[u] = max(F[u], siz[v]);</span><br><span class="line">  &#125;</span><br><span class="line">  F[u] = max(F[u], siz_tree - siz[u]);</span><br><span class="line">  <span class="keyword">if</span> (F[u] &lt; F[rt]) rt = u;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="2-更新"><a href="#2-更新" class="headerlink" title="2.更新"></a><strong>2.更新</strong></h4><p>对于一棵树的重心，优先考虑经过这个点的路径对答案的贡献(work统计，由题意而定)</p>
-<h4 id="3-继续递归"><a href="#3-继续递归" class="headerlink" title="3.继续递归"></a><strong>3.</strong>继续递归</h4><p>删去已经计算过的重心(vis标记)，继续递归其子树</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">  vis[u] = <span class="number">1</span>;</span><br><span class="line">  work(u);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].next) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (vis[v]) <span class="keyword">continue</span>;</span><br><span class="line">    F[rt = <span class="number">0</span>] = siz_tree = siz[v];</span><br><span class="line">    getroot(v, <span class="number">0</span>);</span><br><span class="line">    solve(rt);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>完成所有的solve操作后，就可以得到想要的答案了</li>
-<li>因为每一次寻找子树的大小不超过 $n/2$ 所以分治层数不超过 $logn$ 所以总复杂度 $nlogn$ </li>
-</ul>
-<p><strong>练习题</strong></p>
-<ul>
-<li>POJ 1741</li>
-<li>BZOJ 1316</li>
-<li>BZOJ 14680</li>
-<li>BZOJ 2152</li>
-<li>BZOJ 2599 </li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2649,7 +2607,7 @@ Prob(E)=\frac{|E|}{|S|}</script>
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2699,7 +2657,9 @@ Prob(E)=\frac{|E|}{|S|}</script>
                     
                       
                     
-                    <span class="site-state-item-count">10</span>
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

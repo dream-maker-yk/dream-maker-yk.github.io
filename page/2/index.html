@@ -379,6 +379,226 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/点分治/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dream_maker">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/o_id.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dream_maker's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/blogs/点分治/" class="post-title-link" itemprop="https://github.com/dream-maker-yk/dream-maker-yk.github.io/page/2/index.html">算法-点分治</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-05 23:00:31" itemprop="dateCreated datePublished" datetime="2018-12-05T23:00:31+08:00">2018-12-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-01-06 17:35:08" itemprop="dateModified" datetime="2019-01-06T17:35:08+08:00">2019-01-06</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/知识点整理/" itemprop="url" rel="index"><span itemprop="name">知识点整理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>解决树上路径问题</strong></p>
+<p>在解决树上路径问题时，我们会想到将树拆成几部分来提高我们的时间效率，当一棵树被分成若干子树时，我们可以用同样的方法进行处理，并不断进行下去，所以<strong>为了使每次的处理最优，我们通常要选取树的重心进行处理</strong>，选取了重心我们的下一层子树节点数会更小，时间复杂度也就更优秀。</p>
+<ul>
+<li>重心:一个点为重心，则它所连接的子树节点数最大值最小</li>
+</ul>
+<h4 id="变量定义"><a href="#变量定义" class="headerlink" title="变量定义"></a>变量定义</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rt</td>
+<td>当前子树根节点</td>
+</tr>
+<tr>
+<td>siz_tree</td>
+<td>当前子树大小</td>
+</tr>
+<tr>
+<td>F</td>
+<td>以每个节点为根的最大子树大小</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="1-寻找重心"><a href="#1-寻找重心" class="headerlink" title="1.寻找重心"></a><strong>1.寻找重心</strong></h4><ul>
+<li>DFS出以每个点为根的最大子树大小</li>
+<li>如果当前节点为根更优，更新当前节点为根</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getroot</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> fa)</span> </span>&#123;</span><br><span class="line">  siz[u] = <span class="number">1</span>, F[u] = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].next) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (v == fa || vis[v]) <span class="keyword">continue</span>;</span><br><span class="line">    getroot(v, u);</span><br><span class="line">    siz[u] += siz[v];</span><br><span class="line">    F[u] = max(F[u], siz[v]);</span><br><span class="line">  &#125;</span><br><span class="line">  F[u] = max(F[u], siz_tree - siz[u]);</span><br><span class="line">  <span class="keyword">if</span> (F[u] &lt; F[rt]) rt = u;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-更新"><a href="#2-更新" class="headerlink" title="2.更新"></a><strong>2.更新</strong></h4><p>对于一棵树的重心，优先考虑经过这个点的路径对答案的贡献(work统计，由题意而定)</p>
+<h4 id="3-继续递归"><a href="#3-继续递归" class="headerlink" title="3.继续递归"></a><strong>3.</strong>继续递归</h4><p>删去已经计算过的重心(vis标记)，继续递归其子树</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">  vis[u] = <span class="number">1</span>;</span><br><span class="line">  work(u);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i; i = E[i].next) &#123;</span><br><span class="line">    <span class="keyword">int</span> v = E[i].v;</span><br><span class="line">    <span class="keyword">if</span> (vis[v]) <span class="keyword">continue</span>;</span><br><span class="line">    F[rt = <span class="number">0</span>] = siz_tree = siz[v];</span><br><span class="line">    getroot(v, <span class="number">0</span>);</span><br><span class="line">    solve(rt);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>完成所有的solve操作后，就可以得到想要的答案了</li>
+<li>因为每一次寻找子树的大小不超过 $n/2$ 所以分治层数不超过 $logn$ 所以总复杂度 $nlogn$ </li>
+</ul>
+<p><strong>练习题</strong></p>
+<ul>
+<li>POJ 1741</li>
+<li>BZOJ 1316</li>
+<li>BZOJ 14680</li>
+<li>BZOJ 2152</li>
+<li>BZOJ 2599 </li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/线段树类数据结构-基础篇/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -789,7 +1009,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -839,7 +1059,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">10</span>
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -1462,6 +1684,8 @@
     
       
         
+      
+    
       
     
   
