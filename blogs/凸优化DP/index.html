@@ -108,20 +108,25 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Dream_maker&#39;s blog">
-<meta property="og:url" content="https://github.com/dream-maker-yk/dream-maker-yk.github.io/archives/page/2/index.html">
+  <meta name="description" content="凸优化DP简介凸优化用于一类dp优化的问题 可以把一个$O(n)$的复杂度优化成$O(\log n)$ 如果我们最后的dp数组在某一维上是凸壳就可以用凸壳来维护 在这种问题中我们如果不管这一维的影响可以很快地求出极值 我们就可以用凸优化的思想来操作 算法流程假设我们的dp数组是$F(x)$并且满足$F(x)$的导数是单调函数 我们就可以对$F$函数进行一定的修改使得$F’(x)=F(x)+kx$函">
+<meta name="keywords" content="DP-优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="凸优化DP">
+<meta property="og:url" content="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/凸优化DP/index.html">
 <meta property="og:site_name" content="Dream_maker&#39;s blog">
+<meta property="og:description" content="凸优化DP简介凸优化用于一类dp优化的问题 可以把一个$O(n)$的复杂度优化成$O(\log n)$ 如果我们最后的dp数组在某一维上是凸壳就可以用凸壳来维护 在这种问题中我们如果不管这一维的影响可以很快地求出极值 我们就可以用凸优化的思想来操作 算法流程假设我们的dp数组是$F(x)$并且满足$F(x)$的导数是单调函数 我们就可以对$F$函数进行一定的修改使得$F’(x)=F(x)+kx$函">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-03-28T11:34:25.363Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Dream_maker&#39;s blog">
+<meta name="twitter:title" content="凸优化DP">
+<meta name="twitter:description" content="凸优化DP简介凸优化用于一类dp优化的问题 可以把一个$O(n)$的复杂度优化成$O(\log n)$ 如果我们最后的dp数组在某一维上是凸壳就可以用凸壳来维护 在这种问题中我们如果不管这一维的影响可以很快地求出极值 我们就可以用凸优化的思想来操作 算法流程假设我们的dp数组是$F(x)$并且满足$F(x)$的导数是单调函数 我们就可以对$F$函数进行一定的修改使得$F’(x)=F(x)+kx$函">
 
 
 
 
 
 
-  <link rel="canonical" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/archives/page/2/">
+  <link rel="canonical" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/凸优化DP/">
 
 
 
@@ -131,7 +136,7 @@
   };
 </script>
 
-  <title>Archive | Dream_maker's blog</title>
+  <title>凸优化DP | Dream_maker's blog</title>
   
 
 
@@ -180,7 +185,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <a href="https://github.com/dream-maker-yk"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
@@ -287,7 +292,7 @@
         
         
           
-          <li class="menu-item menu-item-archives menu-item-active">
+          <li class="menu-item menu-item-archives">
 
     
     
@@ -358,178 +363,208 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/dream-maker-yk/dream-maker-yk.github.io/blogs/凸优化DP/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dream_maker">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/o_id.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dream_maker's blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">凸优化DP
+              
+            
+          </h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-28 19:16:48 / Modified: 19:34:25" itemprop="dateCreated datePublished" datetime="2019-03-28T19:16:48+08:00">2019-03-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
           
-        
-        Um..! 13 posts in total. Keep on posting.
-      </span>
-      
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/知识点整理/" itemprop="url" rel="index"><span itemprop="name">知识点整理</span></a></span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blogs/组合数学阅读笔记-第2章-排列与组合/" itemprop="url">
-              
-                <span itemprop="name">组合数学阅读笔记-第2章:排列与组合</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-06T22:31:08+08:00" content="2018-12-06">
-          12-06
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blogs/点分治/" itemprop="url">
-              
-                <span itemprop="name">算法-点分治</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-05T23:00:31+08:00" content="2018-12-05">
-          12-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/blogs/线段树类数据结构-基础篇/" itemprop="url">
-              
-                <span itemprop="name">线段树类·数据结构的简单运用--基础篇</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-05T23:00:31+08:00" content="2018-12-05">
-          12-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <h1 id="凸优化DP"><a href="#凸优化DP" class="headerlink" title="凸优化DP"></a>凸优化DP</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>凸优化用于一类dp优化的问题</p>
+<p>可以把一个$O(n)$的复杂度优化成$O(\log n)$</p>
+<p>如果我们最后的dp数组在某一维上是凸壳就可以用凸壳来维护</p>
+<p>在这种问题中我们如果不管这一维的影响可以很快地求出极值</p>
+<p>我们就可以用凸优化的思想来操作</p>
+<h2 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h2><p>假设我们的dp数组是$F(x)$并且满足$F(x)$的导数是单调函数</p>
+<p>我们就可以对$F$函数进行一定的修改使得$F’(x)=F(x)+kx$函数的极值落在我们需要求的那一个点上</p>
+<p>于是我们可以对斜率k进行二分，来求出最合适的那一个值</p>
+<p>具体来说，<a href="https://loj.ac/problem/2478" target="_blank" rel="noopener">这道题</a>里面我们需要求的是树上k+1条点不相交路径的最大权值和</p>
+<p>我们发现如果设$F(x)$表示选出x条不相交路径的最大权值，最后的F函数是一个上凸壳</p>
+<p>然后我们就可以考虑二分出斜率的偏移量$w$</p>
+<p>考虑它的实际意义，就是说每次多选出一条路径就需要加上额外的$w$代价，这样dp我们只需要记录最值和对应的路径条数就可以了</p>
+<p>至于是要让路径条数最大化还是最小化因题而异</p>
+<p>其实挺简单的算法，多做几道题就会了</p>
+<p><a href="https://loj.ac/problem/2478" target="_blank" rel="noopener">loj2478</a><br><a href="https://floj.tech/problem/1935" target="_blank" rel="noopener">floj1935</a><br><a href="http://codeforces.com/gym/101242/attachments" target="_blank" rel="noopener">WF2016 B</a></p>
 
       
-
     </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DP-优化/" rel="tag"># DP-优化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blogs/可持久化点分树/" rel="next" title="可持久化点分树">
+                <i class="fa fa-chevron-left"></i> 可持久化点分树
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span>
-  </nav>
+  </article>
 
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -550,8 +585,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -744,6 +788,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#凸优化DP"><span class="nav-number">1.</span> <span class="nav-text">凸优化DP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法流程"><span class="nav-number">1.2.</span> <span class="nav-text">算法流程</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -878,6 +938,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
 
   
 
@@ -1241,6 +1305,30 @@
   
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
   
 
 
